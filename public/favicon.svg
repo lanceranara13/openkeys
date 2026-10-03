@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- A vermilion keycap: side wall below, top face above. -->
+  <rect x="4" y="10" width="56" height="50" rx="10" fill="#9a2e11" />
+  <rect x="4" y="4" width="56" height="48" rx="10" fill="#d4421c" />
+  <text
+    x="32"
+    y="37"
+    text-anchor="middle"
+    font-family="ui-monospace, Consolas, monospace"
+    font-size="24"
+    font-weight="700"
+    fill="#fff"
+  >OK</text>
+</svg>

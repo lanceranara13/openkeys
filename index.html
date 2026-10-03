@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f1efe7" />
+    <script>
+      // Pick the theme before the first paint: the saved choice, else the system's.
+      // src/app/useTheme.ts uses the same storage key.
+      (function () {
+        var theme = null;
+        try {
+          theme = localStorage.getItem('openkeys:theme');
+        } catch (error) {
+          // Storage is blocked: follow the system.
+        }
+        if (theme !== 'light' && theme !== 'dark') {
+          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
+    <meta
+      name="description"
+      content="OpenKeys is a free, open source keyboard configurator that runs in your browser. Remap keys, switch layers and tune RGB on VIA-compatible keyboards with nothing to install."
+    />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <title>OpenKeys — Configure any keyboard in your browser</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
