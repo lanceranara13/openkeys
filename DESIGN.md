@@ -120,6 +120,10 @@ on the dark page.
 - **Tag** (`.tag`): small mono label with a hairline border. Yellow for notes.
 - **Inputs**: white, 1px border, 6px radius. Focus thickens the border to ink.
 - **Code**: inline code is a soft grey chip; blocks are cream text on `--case`.
+- **Keyboard list** (`.brand`, `.boards__item`): the Keyboards page. One section per brand,
+  A to Z, separated by a soft rule. Each keyboard is an outlined button with its model and,
+  in mono, its USB id; it turns yellow on hover. A search field and a row of brand chips
+  sit above the list.
 - **Toast**: cream text on `--case`, bottom centre, click to dismiss.
 - **Theme switch**: a small keycap button in the header, labelled with the theme it
   switches to ("Dark" / "Light") next to a moon or sun.

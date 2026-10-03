@@ -1,5 +1,6 @@
 import index from 'virtual:keyboard-index';
 import { deviceKey, parseDefinition, type KeyboardDefinition } from './definition';
+import type { KeyboardEntry } from './keyboard-list';
 
 /**
  * Finds the definition for a USB device. Definitions come from two places:
@@ -12,8 +13,8 @@ const STORAGE_KEY = 'openkeys:definitions';
 // One lazy chunk per definition, so only the connected keyboard is downloaded.
 const loaders = import.meta.glob<unknown>('/keyboards/**/*.json', { import: 'default' });
 
-/** Name and USB ids of every keyboard that ships with the app. */
-export const bundledKeyboards = index;
+/** Every keyboard that ships with the app, sorted by brand, then by model. */
+export const bundledKeyboards: readonly KeyboardEntry[] = index;
 
 function readSideloaded(): Record<string, unknown> {
   try {

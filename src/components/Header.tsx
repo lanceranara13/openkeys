@@ -25,7 +25,9 @@ export function Header({ route, deviceName, theme, onToggleTheme }: Props) {
 
         <nav className="header__nav" aria-label="Main">
           <a href="#how">How it works</a>
-          <a href="#keyboards">Keyboards</a>
+          <a href="#/keyboards" aria-current={route === 'keyboards' ? 'page' : undefined}>
+            Keyboards
+          </a>
           <a href="#add">Add yours</a>
           <a href="#faq">FAQ</a>
         </nav>
@@ -42,15 +44,15 @@ export function Header({ route, deviceName, theme, onToggleTheme }: Props) {
             <span className="theme-toggle__label">{theme === 'dark' ? 'Light' : 'Dark'}</span>
           </button>
 
-          {route === 'home' ? (
-            <a className="btn btn--primary btn--sm" href="#/configure">
-              Open configurator
-            </a>
-          ) : (
+          {route === 'configure' ? (
             <span className={`status${deviceName ? '' : ' status--off'}`}>
               <span className="status__dot" aria-hidden />
               {deviceName ?? 'Not connected'}
             </span>
+          ) : (
+            <a className="btn btn--primary btn--sm" href="#/configure">
+              Open configurator
+            </a>
           )}
         </div>
       </div>

@@ -1,17 +1,16 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import type { Plugin } from 'vite';
+import type { KeyboardEntry } from '../src/core/keyboard-list.ts';
 
 const VIRTUAL_ID = 'virtual:keyboard-index';
 const RESOLVED_ID = '\0' + VIRTUAL_ID;
 
-export interface KeyboardIndexEntry {
-  /** Path of the definition inside `keyboards/`, with forward slashes. */
-  path: string;
-  name: string;
-  vendorId: number;
-  productId: number;
-}
+// Brand of definitions that sit directly in keyboards/, outside any folder.
+const NO_BRAND = 'Other';
+
+// Sorts "Q2" before "Q10" and ignores case.
+const collator = new Intl.Collator('en', { numeric: true, sensitivity: 'base' });
 
 function listJson(dir: string): string[] {
   if (!fs.existsSync(dir)) return [];
@@ -30,10 +29,46 @@ function readId(value: unknown, field: string, file: string): number {
   return id;
 }
 
-/** Reads just enough of every definition in `keyboards/` to match a USB device to its file. */
-export function scanKeyboards(dir: string): KeyboardIndexEntry[] {
+/**
+ * The brand of a folder, spelled the way its own keyboards spell it:
+ * "ergodox_ez" + "ErgoDox EZ" -> "ErgoDox EZ", "gmmk" + "GMMK Pro" -> "GMMK".
+ * When no keyboard name starts with the folder name, the folder name is tidied up:
+ * "keebio" -> "Keebio".
+ */
+export function brandName(folder: string, names: readonly string[]): string {
+  const wanted = folder.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+  for (const name of names) {
+    let seen = '';
+    for (let index = 0; index < name.length && wanted.startsWith(seen); index++) {
+      const char = name[index].toLowerCase();
+      if (/[a-z0-9]/.test(char)) seen += char;
+      const atWordEnd = index + 1 === name.length || /[^a-z0-9]/i.test(name[index + 1]);
+      if (wanted && seen === wanted && atWordEnd) return name.slice(0, index + 1).trim();
+    }
+  }
+
+  const tidy = folder
+    .split(/[_-]+/)
+    .filter(Boolean)
+    .map((word) => word[0].toUpperCase() + word.slice(1))
+    .join(' ');
+  return tidy || folder;
+}
+
+/** The keyboard name without its brand: "Keychron Q1V2 ANSI" -> "Q1V2 ANSI". */
+export function modelName(brand: string, name: string): string {
+  const startsWithBrand = name.toLowerCase().startsWith(`${brand.toLowerCase()} `);
+  return (startsWithBrand && name.slice(brand.length).trim()) || name;
+}
+
+/**
+ * Reads just enough of every definition in `keyboards/` to list it and to match a USB
+ * device to its file. The result is sorted by brand, then by model.
+ */
+export function scanKeyboards(dir: string): KeyboardEntry[] {
   const seen = new Map<number, string>();
-  const entries = listJson(dir).map((full) => {
+  const found = listJson(dir).map((full) => {
     const file = path.relative(dir, full).split(path.sep).join('/');
     let raw: { name?: unknown; vendorId?: unknown; productId?: unknown };
     try {
@@ -58,9 +93,27 @@ export function scanKeyboards(dir: string): KeyboardIndexEntry[] {
       throw new Error(`keyboards/${file}: same vendorId/productId as keyboards/${other}`);
     }
     seen.set(usb, file);
-    return { path: file, name, vendorId, productId };
+
+    // The first folder is the maker: keyboards/<brand>/.../<board>.json
+    const folder = file.includes('/') ? file.slice(0, file.indexOf('/')) : '';
+    return { path: file, name, folder, vendorId, productId };
   });
-  return entries.sort((a, b) => a.name.localeCompare(b.name));
+
+  const namesByFolder = new Map<string, string[]>();
+  for (const { folder, name } of found) {
+    namesByFolder.set(folder, [...(namesByFolder.get(folder) ?? []), name]);
+  }
+  const brands = new Map<string, string>();
+  for (const [folder, names] of namesByFolder) {
+    brands.set(folder, folder ? brandName(folder, names) : NO_BRAND);
+  }
+
+  return found
+    .map(({ folder, ...entry }) => {
+      const brand = brands.get(folder)!;
+      return { ...entry, brand, model: modelName(brand, entry.name) };
+    })
+    .sort((a, b) => collator.compare(a.brand, b.brand) || collator.compare(a.model, b.model));
 }
 
 /**

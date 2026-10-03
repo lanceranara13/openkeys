@@ -50,8 +50,9 @@ npm run check                          # validate
 ```
 
 Or drop your own file into `keyboards/<brand>/<board>.json`. There is nothing to register:
-the folder is scanned at build time. To see the result without the hardware, run
-`npm run dev` and click the keyboard under **Supported keyboards**.
+the folder is scanned at build time, and the first folder becomes the brand the keyboard is
+listed under. To see the result without the hardware, run `npm run dev`, open the
+**Keyboards** page and click it.
 
 Step by step, with the file format: [docs/adding-a-keyboard.md](docs/adding-a-keyboard.md).
 

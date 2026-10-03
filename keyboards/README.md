@@ -1,7 +1,8 @@
 # Keyboards
 
 One JSON file per keyboard. Every `.json` file in this folder, at any depth, is picked up
-automatically. Folder names are only for people.
+automatically. The first folder is the brand the keyboard is listed under; deeper folders
+are only for people.
 
 ```sh
 npm run add-keyboard -- --search <text>   # find a keyboard in the VIA collection

@@ -6,14 +6,13 @@ import {
   Layers,
   Palette,
   Play,
-  Search,
   ShieldCheck,
   Terminal,
   Usb,
   Zap,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { deviceKey } from '../core/definition';
+import { useEffect } from 'react';
+import { groupByBrand } from '../core/keyboard-list';
 import { resolveLayout } from '../core/kle';
 import { bundledKeyboards } from '../core/registry';
 import { demoDefinition, demoPreview } from '../demo';
@@ -22,12 +21,12 @@ import { KeyboardView } from './KeyboardView';
 interface Props {
   onConnect: () => void;
   onDemo: () => void;
-  /** Opens a virtual copy of a built-in keyboard, by its path in `keyboards/`. */
-  onPreview: (path: string) => void;
 }
 
 const previewLayout = resolveLayout(demoDefinition.layout);
-const MAX_LISTED = 60;
+const brands = groupByBrand(bundledKeyboards);
+// The landing page only names a few brands; the Keyboards page lists everything.
+const MAX_BRANDS = 12;
 
 /** The fact sheet beside the headline. */
 const SPEC = [
@@ -135,14 +134,6 @@ const FAQ = [
   },
 ];
 
-function External({ href, children }: { href: string; children: string }) {
-  return (
-    <a href={href} target="_blank" rel="noreferrer">
-      {children}
-    </a>
-  );
-}
-
 function Eyebrow({ number, children }: { number: string; children: string }) {
   return (
     <p className="eyebrow">
@@ -152,18 +143,13 @@ function Eyebrow({ number, children }: { number: string; children: string }) {
   );
 }
 
-export function Landing({ onConnect, onDemo, onPreview }: Props) {
-  const [query, setQuery] = useState('');
-
-  // Arriving from the configurator with a section link: the section did not exist
-  // when the browser tried to scroll to it.
+export function Landing({ onConnect, onDemo }: Props) {
+  // Arriving from another page with a section link: the section did not exist when
+  // the browser tried to scroll to it.
   useEffect(() => {
     const id = window.location.hash.slice(1);
     if (id && !id.startsWith('/')) document.getElementById(id)?.scrollIntoView();
   }, []);
-
-  const search = query.trim().toLowerCase();
-  const matches = bundledKeyboards.filter((keyboard) => keyboard.name.toLowerCase().includes(search));
 
   return (
     <>
@@ -255,45 +241,23 @@ export function Landing({ onConnect, onDemo, onPreview }: Props) {
         </h2>
         <p className="section__lead">
           Built-in keyboards are recognised the moment you connect them. Anything else works by
-          loading its VIA definition file. Click a keyboard to open a virtual copy of it.
+          loading its VIA definition file.
         </p>
-        <label className="field field--search field--wide">
-          <Search size={16} aria-hidden />
-          <input
-            type="search"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search built-in keyboards…"
-            aria-label="Search built-in keyboards"
-          />
-        </label>
-        {matches.length === 0 ? (
-          <p className="section__lead">
-            No built-in keyboard matches “{query}”. It can still work:{' '}
-            <a href="#add">add it in a minute</a>.
-          </p>
-        ) : (
-          <ul className="boards">
-            {matches.slice(0, MAX_LISTED).map((keyboard) => (
-              <li key={keyboard.path}>
-                <button
-                  type="button"
-                  className="boards__item"
-                  title={`Preview ${keyboard.name}`}
-                  onClick={() => onPreview(keyboard.path)}
-                >
-                  {keyboard.name}
-                  <code>{deviceKey(keyboard.vendorId, keyboard.productId)}</code>
-                </button>
-              </li>
-            ))}
-            {matches.length > MAX_LISTED && (
-              <li className="boards__more">
-                and {matches.length - MAX_LISTED} more. Search to narrow it down.
-              </li>
-            )}
-          </ul>
-        )}
+        <ul className="boards">
+          {brands.slice(0, MAX_BRANDS).map((group) => (
+            <li key={group.brand} className="tag">
+              {group.brand} · {group.keyboards.length}
+            </li>
+          ))}
+          {brands.length > MAX_BRANDS && (
+            <li className="boards__more">and {brands.length - MAX_BRANDS} more brands</li>
+          )}
+        </ul>
+        <div className="hero__actions">
+          <a className="btn btn--lg" href="#/keyboards">
+            Browse all {bundledKeyboards.length} keyboards <ArrowRight size={18} aria-hidden />
+          </a>
+        </div>
       </section>
 
       <section id="add" className="section container">
@@ -347,31 +311,6 @@ export function Landing({ onConnect, onDemo, onPreview }: Props) {
           </div>
         </div>
       </section>
-
-      <footer className="footer container">
-        {/* The short version. CREDITS.md has the full list. */}
-        <p className="footer__credits">
-          Built on <External href="https://github.com/qmk/qmk_firmware">QMK</External> and the{' '}
-          <External href="https://github.com/the-via/keyboards">VIA</External> keyboard
-          definitions. Layout format from{' '}
-          <External href="https://github.com/ijprest/keyboard-layout-editor">
-            Keyboard Layout Editor
-          </External>
-          . Type is <External href="https://github.com/IBM/plex">IBM Plex</External>, icons are{' '}
-          <External href="https://github.com/lucide-icons/lucide">Lucide</External>. Design
-          reference from{' '}
-          <External href="https://github.com/VoltAgent/awesome-design-md">
-            awesome-design-md
-          </External>
-          . Idea from{' '}
-          <External href="https://github.com/OpenMouse-Project/openmouse">OpenMouse</External>. The
-          full list, with licenses, is in <code>CREDITS.md</code>.
-        </p>
-        <p className="footer__meta">
-          <span>OpenKeys · free software under GPL-3.0, no warranty</span>
-          <span>Not affiliated with VIA, QMK or any keyboard maker.</span>
-        </p>
-      </footer>
     </>
   );
 }

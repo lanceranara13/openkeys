@@ -35,7 +35,13 @@ npm run add-keyboard ./my-board.json
 
 ## 2. Or write one
 
-Create `keyboards/<brand>/<board>.json`:
+Create `keyboards/<brand>/<board>.json`.
+
+The first folder is the brand. The **Keyboards** page lists brands A to Z and the keyboards
+of each brand by name. The brand is spelled the way the keyboard names spell it: with a
+folder `my_brand` and a keyboard named "My Brand Sixty", the brand is "My Brand" and the
+keyboard is listed as "Sixty". If no name starts with the folder name, the folder name is
+used (`keebio` becomes "Keebio").
 
 ```json
 {
@@ -166,9 +172,9 @@ keyboards/my-brand/my-board.json: "vendorId" must look like "0x3434"
 npm run dev
 ```
 
-Open the page, go to **Supported keyboards** and click your keyboard. A virtual copy opens
-with your layout, layout options and menus, so they can be checked before the real board is
-plugged in. Then connect the real one and remap a key.
+Open the **Keyboards** page, search for your keyboard or find it under its brand, and click
+it. A virtual copy opens with your layout, layout options and menus, so they can be checked
+before the real board is plugged in. Then connect the real one and remap a key.
 
 ## Without touching the code
 

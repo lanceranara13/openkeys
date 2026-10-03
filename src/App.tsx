@@ -4,7 +4,9 @@ import { openConfigurator, useHashRoute } from './app/useHashRoute';
 import { useSession, type Notice } from './app/useSession';
 import { useTheme } from './app/useTheme';
 import { Configurator } from './components/Configurator';
+import { Footer } from './components/Footer';
 import { Header } from './components/Header';
+import { KeyboardsPage } from './components/KeyboardsPage';
 import { Landing } from './components/Landing';
 
 const TOAST_MS = { ok: 3500, error: 9000 };
@@ -48,7 +50,7 @@ export default function App() {
         onToggleTheme={toggle}
       />
       <main>
-        {route === 'home' ? (
+        {route === 'home' && (
           <Landing
             onConnect={() => {
               openConfigurator();
@@ -58,15 +60,19 @@ export default function App() {
               openConfigurator();
               void session.connectDemo();
             }}
+          />
+        )}
+        {route === 'keyboards' && (
+          <KeyboardsPage
             onPreview={(path) => {
               openConfigurator();
               void session.connectPreview(path);
             }}
           />
-        ) : (
-          <Configurator session={session} />
         )}
+        {route === 'configure' && <Configurator session={session} />}
       </main>
+      <Footer />
       <Toast notice={session.notice} />
     </>
   );
