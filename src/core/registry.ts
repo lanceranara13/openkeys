@@ -37,9 +37,14 @@ export function rememberDefinition(raw: unknown, definition: KeyboardDefinition)
   }
 }
 
+/**
+ * `modelId` is the model number a keyboard reported itself, on makers that ship many
+ * models under one USB id; null for everything else.
+ */
 export async function findDefinition(
   vendorId: number,
   productId: number,
+  modelId: number | null = null,
 ): Promise<KeyboardDefinition | null> {
   const sideloaded = readSideloaded()[deviceKey(vendorId, productId)];
   if (sideloaded) {
@@ -50,7 +55,14 @@ export async function findDefinition(
     }
   }
 
-  const entry = index.find((item) => item.vendorId === vendorId && item.productId === productId);
+  const candidates = index.filter(
+    (item) => item.vendorId === vendorId && item.productId === productId,
+  );
+  // A keyboard that reported a model only fits the definition written for that model.
+  const entry =
+    modelId === null
+      ? candidates.find((item) => item.deviceId === undefined)
+      : candidates.find((item) => item.deviceId === modelId);
   return entry ? loadBundled(entry.path) : null;
 }
 

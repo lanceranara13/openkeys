@@ -71,7 +71,8 @@ Then `npm run dev`, open **Keyboards** and click it to see it. Nothing else need
 keyboards/            one JSON definition per keyboard, picked up automatically
 src/core/             definition parser, layout (KLE) parser, keycodes, menus, backups
 src/drivers/          one driver per protocol. via.ts speaks QMK/VIA,
-                      keychron-analog.ts adds Keychron's magnetic switch commands
+                      keychron-analog.ts adds Keychron's magnetic switch commands,
+                      yichip.ts speaks Akko's own protocol
 src/transports/       webhid.ts for real keyboards, virtual.ts emulates firmware in memory
 src/demo/             the demo keyboard
 src/app/              connection state (useSession) and routing
@@ -102,10 +103,17 @@ from touching interface code. The look of the app is described in [DESIGN.md](DE
   against an emulator of it, **not yet on real hardware**, so treat it as experimental.
   "Reset switches" restores factory settings. Keyboards that keep these settings in VIA
   menus (keyboard-wide, not per key) show them as ordinary tabs.
+- **Akko (non-VIA):** the Akko 5075B Plus works through a second driver
+  (`src/drivers/yichip.ts`) for RongYuan's YiChip firmware. Its commands were checked on
+  the real keyboard: it is recognised, its base layer is shown and keys can be remapped,
+  to media keys too. "Reset keymap" puts the keys back to the defaults listed in the
+  definition file; that part is tested against an emulator only. Not yet: the Fn layer,
+  lighting, macros, and the 2.4G dongle (connect by cable). Other models on the same
+  firmware need only a definition file with their `deviceId` and default keys.
 - **Other brands:** a keyboard works when it runs QMK with VIA, whatever the brand. The
-  QMK/VIA models of Akko and MonsGeek are built in. Their magnetic models, and those of
-  Epomaker, Womier and DrunkDeer, run different firmware with its own protocol and need a
-  driver that does not exist yet. Aula keyboards use a closed protocol.
+  QMK/VIA models of Akko and MonsGeek are built in. Magnetic models of Akko, MonsGeek,
+  Epomaker, Womier and DrunkDeer run a related firmware that numbers its commands
+  differently; it has no driver yet. Aula keyboards use a closed protocol.
 
 ## Not there yet
 

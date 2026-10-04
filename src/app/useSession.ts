@@ -5,7 +5,8 @@ import { KC_NO, KC_TRNS } from '../core/keycodes';
 import { valueSize, type MenuControl } from '../core/menus';
 import { findDefinition, loadBundled, rememberDefinition } from '../core/registry';
 import { createDemoTransport, demoDefinition } from '../demo';
-import { createDriver, hidFilters } from '../drivers';
+import { createDriver, hidFilters, identifyModel } from '../drivers';
+import { createVirtualYiChipTransport } from '../transports/virtual-yichip';
 import type {
   AnalogState,
   AnalogSupport,
@@ -96,6 +97,7 @@ async function readDefinitionFile(file: File) {
 
 /** A keyboard in memory that is laid out like `definition`, with an empty keymap. */
 function virtualCopy(definition: KeyboardDefinition): Transport {
+  if (definition.protocol === 'yichip') return createVirtualYiChipTransport(definition);
   const { rows, cols } = definition.matrix;
   const blank = (keycode: number) => Array<number>(rows * cols).fill(keycode);
   const keyboard = new VirtualKeyboard({
@@ -223,7 +225,9 @@ export function useSession() {
         const transport = await openHidTransport(device);
         transportRef.current = transport;
         const { vendorId, productId } = transport.info;
-        return { transport, definition: await findDefinition(vendorId, productId) };
+        // Some makers reuse one USB id for many models; those keyboards say which they are.
+        const model = await identifyModel(transport);
+        return { transport, definition: await findDefinition(vendorId, productId, model) };
       }),
     [open],
   );

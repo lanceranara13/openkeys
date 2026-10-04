@@ -17,6 +17,14 @@ export interface KeyboardDefinition {
    * it to the driver, which recognises the makers it knows by their USB vendor id.
    */
   analog: string | null;
+  /** Model number the keyboard reports, for makers that reuse one USB id across models. */
+  deviceId: number | null;
+  /**
+   * What each key holds as shipped, indexed by the firmware's own key position: the
+   * USB HID code of a plain key, or the keyboard's full stored value for anything else.
+   * Only for protocols that need it to put keys back to default.
+   */
+  defaultKeymap: number[] | null;
   matrix: { rows: number; cols: number };
   layout: ParsedLayout;
   layoutOptions: LayoutOption[];
@@ -116,6 +124,11 @@ export function parseDefinition(raw: unknown): KeyboardDefinition {
     productId: readUsbId(raw.productId, 'productId'),
     protocol: typeof raw.protocol === 'string' ? raw.protocol : 'via',
     analog: typeof raw.analog === 'string' ? raw.analog : null,
+    deviceId: typeof raw.deviceId === 'number' ? raw.deviceId : null,
+    defaultKeymap:
+      Array.isArray(raw.defaultKeymap) && raw.defaultKeymap.every((code) => typeof code === 'number')
+        ? (raw.defaultKeymap as number[])
+        : null,
     matrix,
     layout,
     layoutOptions: readLayoutOptions(raw.layouts.labels),

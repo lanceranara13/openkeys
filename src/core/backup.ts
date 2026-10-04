@@ -61,7 +61,8 @@ export function readBackup(
       (layer) =>
         Array.isArray(layer) &&
         layer.length === keysPerLayer &&
-        layer.every((code) => Number.isInteger(code) && code >= 0 && code <= 0xffff),
+        // 16 bits for VIA keycodes, 32 for protocols that store four bytes per key.
+        layer.every((code) => Number.isInteger(code) && code >= 0 && code <= 0xffffffff),
     );
   if (!valid) throw new Error('That backup does not match the layout of this keyboard.');
 

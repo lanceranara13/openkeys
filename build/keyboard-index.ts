@@ -67,10 +67,10 @@ export function modelName(brand: string, name: string): string {
  * device to its file. The result is sorted by brand, then by model.
  */
 export function scanKeyboards(dir: string): KeyboardEntry[] {
-  const seen = new Map<number, string>();
+  const seen = new Map<string, string>();
   const found = listJson(dir).map((full) => {
     const file = path.relative(dir, full).split(path.sep).join('/');
-    let raw: { name?: unknown; vendorId?: unknown; productId?: unknown };
+    let raw: { name?: unknown; vendorId?: unknown; productId?: unknown; deviceId?: unknown };
     try {
       raw = JSON.parse(fs.readFileSync(full, 'utf8'));
     } catch (error) {
@@ -87,7 +87,9 @@ export function scanKeyboards(dir: string): KeyboardEntry[] {
     const vendorId = readId(raw.vendorId, 'vendorId', file);
     const productId = readId(raw.productId, 'productId', file);
 
-    const usb = vendorId * 0x10000 + productId;
+    // Makers that reuse one USB id across models tell them apart by "deviceId".
+    const deviceId = typeof raw.deviceId === 'number' ? raw.deviceId : undefined;
+    const usb = `${vendorId}:${productId}:${deviceId ?? ''}`;
     const other = seen.get(usb);
     if (other) {
       throw new Error(`keyboards/${file}: same vendorId/productId as keyboards/${other}`);
@@ -96,7 +98,7 @@ export function scanKeyboards(dir: string): KeyboardEntry[] {
 
     // The first folder is the maker: keyboards/<brand>/.../<board>.json
     const folder = file.includes('/') ? file.slice(0, file.indexOf('/')) : '';
-    return { path: file, name, folder, vendorId, productId };
+    return { path: file, name, folder, vendorId, productId, deviceId };
   });
 
   const namesByFolder = new Map<string, string[]>();

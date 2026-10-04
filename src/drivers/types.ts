@@ -18,6 +18,9 @@ export interface Transport {
   onReport(listener: (report: Uint8Array) => void): () => void;
   onDisconnect(listener: () => void): () => void;
   close(): Promise<void>;
+  /** Feature reports, for keyboards that are configured through them instead. */
+  sendFeature?(report: Uint8Array): Promise<void>;
+  receiveFeature?(): Promise<Uint8Array>;
 }
 
 /** How one magnetic switch behaves. Distances are in tenths of a millimetre. */
@@ -91,4 +94,9 @@ export interface DriverModule {
   /** WebHID filters that find keyboards speaking this protocol. */
   filters: HIDDeviceFilter[];
   create(transport: Transport, definition: KeyboardDefinition): KeyboardDriver;
+  /**
+   * Reads the model number from a keyboard of a maker that ships many models under
+   * one USB id. Resolves to null for keyboards this driver does not recognise.
+   */
+  identify?(transport: Transport): Promise<number | null>;
 }

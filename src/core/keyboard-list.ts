@@ -12,6 +12,8 @@ export interface KeyboardEntry {
   model: string;
   vendorId: number;
   productId: number;
+  /** Model number the keyboard reports, for makers that reuse one USB id across models. */
+  deviceId?: number;
 }
 
 export interface BrandGroup {

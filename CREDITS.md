@@ -86,6 +86,17 @@ projects below. Without them it could not talk to a keyboard.
   `src/drivers/keychron-analog.ts`, and the firmware behaviour that
   `src/transports/virtual.ts` imitates for them.
 
+### monsgeek-akko-linux
+
+- Source: [echtzeit-solutions/monsgeek-akko-linux](https://github.com/echtzeit-solutions/monsgeek-akko-linux)
+- License: GPL-3.0
+- A community driver for Akko and MonsGeek keyboards on RongYuan firmware. Its protocol
+  notes, its device database and the vendor web driver code it documents gave the
+  commands in `src/drivers/yichip.ts` (identify, profile, keymap read, key remap, the
+  checksum) and the key positions and default keys in
+  `keyboards/akko/5075b_plus/5075b_plus.json`. Each was then confirmed on a real Akko
+  5075B Plus before being used.
+
 ### VIA
 
 - Sources: [the-via/app](https://github.com/the-via/app) and

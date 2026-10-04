@@ -52,5 +52,14 @@ export async function openHidTransport(device: HIDDevice): Promise<Transport> {
     async close() {
       if (device.opened) await device.close();
     },
+    async sendFeature(report) {
+      await device.sendFeatureReport(0, new Uint8Array(report));
+    },
+    async receiveFeature() {
+      const { buffer, byteOffset, byteLength } = await device.receiveFeatureReport(0);
+      const bytes = new Uint8Array(buffer, byteOffset, byteLength);
+      // Some platforms put the report id in front of the 64 data bytes.
+      return bytes.length === 65 ? bytes.subarray(1) : bytes;
+    },
   };
 }
