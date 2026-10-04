@@ -6,9 +6,10 @@ import { resolveLayout } from '../core/kle';
 import { bytesToNumber, type MenuControl } from '../core/menus';
 import { ConnectPanel } from './ConnectPanel';
 import { DevicePanel } from './DevicePanel';
-import { KeyboardView } from './KeyboardView';
+import { KeyboardView, keymapLegend } from './KeyboardView';
 import { KeycodePicker } from './KeycodePicker';
 import { MenuPanel } from './MenuPanel';
+import { SwitchesPanel } from './SwitchesPanel';
 
 const STEPS = ['Pick a layer', 'Click a key', 'Choose what it does'];
 
@@ -32,7 +33,7 @@ function glowColor(controls: MenuControl[], values: Record<string, number[]>): s
 }
 
 function Workspace({ session, ready }: { session: Session; ready: ReadySession }) {
-  const { definition, device, info, keymap, values, layoutSelection } = ready;
+  const { definition, device, info, keymap, values, layoutSelection, analog } = ready;
   const { cols } = definition.matrix;
 
   const [tab, setTab] = useState('keymap');
@@ -62,8 +63,12 @@ function Workspace({ session, ready }: { session: Session; ready: ReadySession }
   const activeStep = selected ? 2 : 1;
   const menu = definition.menus.find((item) => `menu:${item.label}` === tab);
 
+  const glow = glowColor(controls, values);
+
   const tabs = [
     { id: 'keymap', label: 'Keymap' },
+    // Only keyboards with magnetic switches OpenKeys can configure get this tab.
+    ...(analog && info.analog ? [{ id: 'switches', label: 'Switches' }] : []),
     ...definition.menus.map((item) => ({ id: `menu:${item.label}`, label: item.label })),
     { id: 'device', label: 'Keyboard' },
   ];
@@ -135,10 +140,8 @@ function Workspace({ session, ready }: { session: Session; ready: ReadySession }
 
           <KeyboardView
             layout={layout}
-            cols={cols}
-            keycodes={keymap[layer]}
-            describe={info.catalog.describe}
-            selected={selected}
+            legend={keymapLegend(keymap[layer], cols, info.catalog.describe)}
+            isSelected={(key) => selected?.row === key.row && selected.col === key.col}
             onSelect={(key) =>
               setSelected((current) =>
                 current?.row === key.row && current.col === key.col
@@ -146,7 +149,7 @@ function Workspace({ session, ready }: { session: Session; ready: ReadySession }
                   : { row: key.row, col: key.col },
               )
             }
-            glow={glowColor(controls, values)}
+            glow={glow}
           />
 
           <div className="panel card">
@@ -170,6 +173,18 @@ function Workspace({ session, ready }: { session: Session; ready: ReadySession }
             />
           </div>
         </>
+      )}
+
+      {tab === 'switches' && analog && info.analog && (
+        <SwitchesPanel
+          session={session}
+          analog={analog}
+          support={info.analog}
+          layout={layout}
+          cols={cols}
+          baseLegend={keymapLegend(keymap[0], cols, info.catalog.describe)}
+          glow={glow}
+        />
       )}
 
       {menu && (

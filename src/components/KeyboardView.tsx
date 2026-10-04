@@ -3,14 +3,24 @@ import type { Keycode } from '../core/keycodes';
 import { KC_NO, KC_TRNS } from '../core/keycodes';
 import type { KeyGeometry, ResolvedLayout } from '../core/kle';
 
+/** What is printed on one key. */
+export interface KeyLegend {
+  label: string;
+  /** Smaller second line, e.g. a switch's actuation point. */
+  sub?: string;
+  /** Tooltip. */
+  title?: string;
+  /** Greys the label out. */
+  dim?: boolean;
+  /** Makes the second line stand out, for keys that differ from the rest. */
+  marked?: boolean;
+}
+
 interface Props {
   layout: ResolvedLayout;
-  /** Matrix columns, to find a key's keycode in `keycodes`. */
-  cols: number;
-  /** Keycodes of the layer being shown, indexed by `row * cols + col`. */
-  keycodes: number[];
-  describe: (code: number) => Keycode;
-  selected?: { row: number; col: number } | null;
+  /** Says what to print on a key that is wired to the matrix. */
+  legend: (key: KeyGeometry) => KeyLegend;
+  isSelected?: (key: KeyGeometry) => boolean;
   /** Makes the keys clickable. Without it the keyboard is just a picture. */
   onSelect?: (key: KeyGeometry) => void;
   /** CSS colour of the light under the keyboard. */
@@ -22,7 +32,24 @@ const percent = (value: number, of: number) => `${(value / of) * 100}%`;
 const hasSecondRect = (key: KeyGeometry) =>
   key.x2 !== 0 || key.y2 !== 0 || key.w2 !== key.w || key.h2 !== key.h;
 
-export function KeyboardView({ layout, cols, keycodes, describe, selected, onSelect, glow }: Props) {
+/** The legend of a keymap layer: what each key sends. */
+export function keymapLegend(
+  keycodes: number[],
+  cols: number,
+  describe: (code: number) => Keycode,
+): (key: KeyGeometry) => KeyLegend {
+  return (key) => {
+    const code = keycodes[key.row * cols + key.col];
+    const keycode = describe(code);
+    return {
+      label: keycode.label,
+      title: `${keycode.title} (${keycode.name})`,
+      dim: code === KC_NO || code === KC_TRNS,
+    };
+  };
+}
+
+export function KeyboardView({ layout, legend, isSelected, onSelect, glow }: Props) {
   const { keys, width, height } = layout;
 
   return (
@@ -32,20 +59,19 @@ export function KeyboardView({ layout, cols, keycodes, describe, selected, onSel
         style={{ aspectRatio: `${width} / ${height}`, '--units': width } as CSSProperties}
       >
         {keys.map((key) => {
+          // An encoder without a switch has no matrix position and nothing to configure.
           const wired = key.row >= 0;
-          const code = wired ? keycodes[key.row * cols + key.col] : undefined;
-          const keycode = code === undefined ? undefined : describe(code);
-          const label = keycode?.label ?? '';
-          const isSelected = wired && selected?.row === key.row && selected.col === key.col;
+          const text: KeyLegend = wired ? legend(key) : { label: '⟳' };
+          const selected = wired && (isSelected?.(key) ?? false);
 
           const className = [
             'key',
             `key--${key.color}`,
             key.encoder !== undefined && 'key--encoder',
-            hasSecondRect(key) && 'key--compound',
-            (code === KC_NO || code === KC_TRNS) && 'key--dim',
-            label.length > 5 && 'key--long',
-            isSelected && 'key--selected',
+            text.dim && 'key--dim',
+            text.label.length > 5 && 'key--long',
+            text.marked && 'key--marked',
+            selected && 'key--selected',
           ]
             .filter(Boolean)
             .join(' ');
@@ -77,7 +103,8 @@ export function KeyboardView({ layout, cols, keycodes, describe, selected, onSel
                 />
               )}
               <span className="key__cap">
-                <span className="key__label">{wired ? label : '⟳'}</span>
+                <span className="key__label">{text.label}</span>
+                {text.sub && <span className="key__sub">{text.sub}</span>}
               </span>
             </>
           );
@@ -88,8 +115,8 @@ export function KeyboardView({ layout, cols, keycodes, describe, selected, onSel
               type="button"
               className={className}
               style={style}
-              title={keycode ? `${keycode.title} (${keycode.name})` : undefined}
-              aria-pressed={isSelected}
+              title={text.title}
+              aria-pressed={selected}
               onClick={() => onSelect(key)}
             >
               {caps}

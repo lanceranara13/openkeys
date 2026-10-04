@@ -17,8 +17,11 @@ VIA-compatible keyboard, with nothing to install and no account.
 Lighting lives in the **Lighting** tab. Backup, restore, layout options and reset live in the
 **Keyboard** tab.
 
-If your keyboard is not built in, the app asks for its VIA definition file (`.json`). Load it
-once and it is remembered in that browser.
+Keyboards with magnetic (Hall effect) switches also get a **Switches** tab: actuation point
+and rapid trigger, for all keys or key by key. See "Good to know" for which keyboards.
+
+If your keyboard is not built in, open **Keyboards** and click **Try a definition file** with
+its VIA definition (`.json`). It is remembered in that browser.
 
 ## Run it
 
@@ -37,34 +40,38 @@ Open the address it prints in Chrome, Edge, Opera or Brave. No keyboard nearby? 
 | `npm run dev` | Start the app locally |
 | `npm run check` | Type check, lint and test. Run this before committing |
 | `npm run build` | Build the static site into `dist/` |
-| `npm run add-keyboard <name>` | Add a keyboard definition (see below) |
+| `npm run add-keyboard <name>` | Find a keyboard, add it and check it (see below) |
 
 `dist/` is plain static files and can be hosted anywhere.
 
 ## Add a keyboard
 
+One command finds the keyboard in the VIA collection, copies its file into `keyboards/` and
+checks it:
+
 ```sh
-npm run add-keyboard -- --search q1    # find it in the VIA collection
-npm run add-keyboard keychron/q1       # copy its definitions into keyboards/
-npm run check                          # validate
+npm run add-keyboard q1
 ```
 
-Or drop your own file into `keyboards/<brand>/<board>.json`. There is nothing to register:
-the folder is scanned at build time, and the first folder becomes the brand the keyboard is
-listed under. To see the result without the hardware, run `npm run dev`, open the
-**Keyboards** page and click it.
+Have the file from the maker instead?
 
-Step by step, with the file format: [docs/adding-a-keyboard.md](docs/adding-a-keyboard.md).
+```sh
+npm run add-keyboard ./my-board.json
+```
 
-Keyboards that do not speak the VIA protocol need a driver:
-[docs/adding-a-driver.md](docs/adding-a-driver.md).
+Then `npm run dev`, open **Keyboards** and click it to see it. Nothing else needs editing.
+
+- Step by step: [docs/adding-a-keyboard.md](docs/adding-a-keyboard.md)
+- Writing a definition from scratch: [docs/definition-format.md](docs/definition-format.md)
+- Keyboards that do not speak VIA need a driver: [docs/adding-a-driver.md](docs/adding-a-driver.md)
 
 ## How it is built
 
 ```
 keyboards/            one JSON definition per keyboard, picked up automatically
 src/core/             definition parser, layout (KLE) parser, keycodes, menus, backups
-src/drivers/          one driver per protocol. via.ts speaks QMK/VIA
+src/drivers/          one driver per protocol. via.ts speaks QMK/VIA,
+                      keychron-analog.ts adds Keychron's magnetic switch commands
 src/transports/       webhid.ts for real keyboards, virtual.ts emulates firmware in memory
 src/demo/             the demo keyboard
 src/app/              connection state (useSession) and routing
@@ -90,12 +97,23 @@ from touching interface code. The look of the app is described in [DESIGN.md](DE
   can hold the keyboard.
 - **Firmware:** the keyboard must run QMK with VIA enabled. Lighting controls need VIA
   protocol 11 or newer (QMK 0.19+). Older firmware still gets key remapping.
+- **Magnetic switches:** the Switches tab works with Keychron HE and Lemokey HE keyboards;
+  21 of them are built in. It is written from Keychron's published firmware and tested
+  against an emulator of it, **not yet on real hardware**, so treat it as experimental.
+  "Reset switches" restores factory settings. Keyboards that keep these settings in VIA
+  menus (keyboard-wide, not per key) show them as ordinary tabs.
+- **Other brands:** a keyboard works when it runs QMK with VIA, whatever the brand. The
+  QMK/VIA models of Akko and MonsGeek are built in. Their magnetic models, and those of
+  Epomaker, Womier and DrunkDeer, run different firmware with its own protocol and need a
+  driver that does not exist yet. Aula keyboards use a closed protocol.
 
 ## Not there yet
 
 - Macros
 - Rotary encoder turn actions (an encoder's press can be remapped)
 - "Keycode" and "button" controls inside custom menus
+- Magnetic switches beyond the basics: dynamic keystroke, SOCD, gamepad mode, calibration
+- Magnetic keyboards other than Keychron and Lemokey
 
 ## Credits
 

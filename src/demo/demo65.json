@@ -2,6 +2,7 @@
   "name": "OpenKeys Demo 65",
   "vendorId": "0x4F4B",
   "productId": "0x0065",
+  "analog": "keychron",
   "matrix": { "rows": 5, "cols": 16 },
   "menus": [
     {

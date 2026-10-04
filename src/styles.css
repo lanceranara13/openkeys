@@ -829,6 +829,21 @@ code {
   font-size: 13px;
 }
 
+.catalog__add {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  padding: 16px 20px;
+}
+
+.catalog__add p {
+  flex: 1 1 380px;
+  max-width: 680px;
+  font-size: 15px;
+}
+
 .brand {
   padding-top: 20px;
   border-top: 1px solid var(--line-soft);
@@ -949,6 +964,8 @@ button.key {
   inset: var(--gap);
   display: grid;
   place-items: center;
+  /* Keeps a label and its second line together in the middle. */
+  align-content: center;
   overflow: hidden;
   padding-bottom: calc(var(--u) * 0.08);
   border-radius: calc(var(--u) * 0.1);
@@ -992,6 +1009,26 @@ button.key {
 .key--long .key__label {
   font-size: max(6px, calc(var(--u) * 0.18));
   font-weight: 500;
+}
+
+/* Second line of a key, e.g. where a magnetic switch registers. */
+.key__sub {
+  margin-top: calc(var(--u) * 0.03);
+  font-family: var(--mono);
+  font-size: max(6px, calc(var(--u) * 0.16));
+  font-weight: 500;
+  line-height: 1;
+  opacity: 0.6;
+}
+
+/* A key whose settings differ from the rest. */
+.key--marked .key__sub {
+  padding: calc(var(--u) * 0.02) calc(var(--u) * 0.06);
+  border-radius: calc(var(--u) * 0.05);
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  opacity: 1;
 }
 
 .key--dim .key__label {
@@ -1332,10 +1369,29 @@ button.key:active .key__cap {
   font-size: 14.5px;
 }
 
+.settings__note--after {
+  margin-top: 0;
+}
+
 .settings__actions {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+}
+
+/* Instruction and selection buttons above the keyboard on the Switches tab. */
+.switches__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 24px;
+}
+
+.switches__bar p {
+  flex: 1 1 420px;
+  max-width: 640px;
+  font-size: 15px;
 }
 
 .control {

@@ -1,7 +1,14 @@
 import type { KeyboardDefinition } from '../core/definition';
 import { createQmkCatalog } from '../core/keycodes';
 import type { ValueRef } from '../core/menus';
-import type { DriverInfo, DriverModule, KeyboardDriver, Transport } from './types';
+import { detectKeychronAnalog } from './keychron-analog';
+import type {
+  AnalogSupport,
+  DriverInfo,
+  DriverModule,
+  KeyboardDriver,
+  Transport,
+} from './types';
 
 /**
  * Driver for keyboards running QMK firmware with VIA enabled.
@@ -36,6 +43,9 @@ const TIMEOUT_MS = 1500;
 const DEFAULT_LAYER_COUNT = 4;
 // Protocol 11 introduced the channel-based custom values that menus are built on.
 const FIRST_MENU_PROTOCOL = 11;
+// Makers whose firmware has Keychron's magnetic switch commands: Keychron and its
+// Lemokey brand, which builds on a copy of the same code.
+const KEYCHRON_ANALOG_VENDOR_IDS = [0x3434, 0x362d];
 
 class UnhandledCommandError extends Error {}
 
@@ -69,7 +79,26 @@ class ViaDriver implements KeyboardDriver {
         this.layerCount,
         this.definition.customKeycodes,
       ),
+      analog: await this.detectAnalog(),
     };
+  }
+
+  /**
+   * Magnetic switch settings are not part of VIA; each maker adds its own commands.
+   * Only keyboards that are expected to know those commands are asked about them.
+   */
+  private async detectAnalog(): Promise<AnalogSupport | null> {
+    const isKeychron =
+      this.definition.analog === 'keychron' ||
+      (this.definition.analog === null &&
+        KEYCHRON_ANALOG_VENDOR_IDS.includes(this.transport.info.vendorId));
+    if (!isKeychron) return null;
+
+    return detectKeychronAnalog(
+      (bytes) => this.request(bytes),
+      (bytes) => this.requestOptional(bytes),
+      this.definition.matrix,
+    );
   }
 
   async readKeymap(): Promise<number[][]> {

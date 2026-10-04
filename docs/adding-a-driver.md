@@ -45,6 +45,16 @@ export const myDriver: DriverModule = {
 };
 ```
 
+### Magnetic switches
+
+`connect()` also returns `analog`: an `AnalogSupport` object (in `src/drivers/types.ts`) on
+keyboards whose magnetic switches the driver can configure, otherwise `null`. When it is
+present the interface shows the **Switches** tab; nothing else has to be wired up.
+
+`src/drivers/keychron-analog.ts` is the one implementation so far and shows the pattern:
+ask the keyboard whether it has the feature, refuse when its matrix is not the one the
+definition describes, then read and write settings in tenths of a millimetre.
+
 ## 2. Register it
 
 In `src/drivers/index.ts`:

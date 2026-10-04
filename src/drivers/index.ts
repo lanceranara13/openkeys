@@ -5,6 +5,9 @@ import { viaDriver } from './via';
 /** Every protocol OpenKeys can speak. Register new drivers here. */
 export const drivers: DriverModule[] = [viaDriver];
 
+/** Values a definition may give its optional "analog" field (magnetic switch settings). */
+export const analogProtocols = ['keychron'];
+
 /** WebHID filters for the browser's device picker, across all drivers. */
 export const hidFilters = drivers.flatMap((driver) => driver.filters);
 

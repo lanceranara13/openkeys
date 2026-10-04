@@ -1,22 +1,20 @@
 import {
   ArrowRight,
   Download,
-  FileJson,
   Keyboard,
   Layers,
+  Magnet,
   Palette,
   Play,
   ShieldCheck,
-  Terminal,
   Usb,
-  Zap,
 } from 'lucide-react';
 import { useEffect } from 'react';
 import { groupByBrand } from '../core/keyboard-list';
 import { resolveLayout } from '../core/kle';
 import { bundledKeyboards } from '../core/registry';
 import { demoDefinition, demoPreview } from '../demo';
-import { KeyboardView } from './KeyboardView';
+import { KeyboardView, keymapLegend } from './KeyboardView';
 
 interface Props {
   onConnect: () => void;
@@ -24,6 +22,11 @@ interface Props {
 }
 
 const previewLayout = resolveLayout(demoDefinition.layout);
+const previewLegend = keymapLegend(
+  demoPreview.keycodes,
+  demoDefinition.matrix.cols,
+  demoPreview.describe,
+);
 const brands = groupByBrand(bundledKeyboards);
 // The landing page only names a few brands; the Keyboards page lists everything.
 const MAX_BRANDS = 12;
@@ -75,9 +78,9 @@ const FEATURES = [
     text: 'Export every layer to one file and load it back whenever you need it.',
   },
   {
-    icon: Zap,
-    title: 'Nothing to install',
-    text: 'Runs in Chrome, Edge, Opera and Brave on Windows, macOS, Linux and ChromeOS.',
+    icon: Magnet,
+    title: 'Magnetic switches',
+    text: 'Actuation point and rapid trigger, for all keys or key by key. Keychron and Lemokey HE boards first; this part is still experimental.',
   },
   {
     icon: ShieldCheck,
@@ -86,23 +89,19 @@ const FEATURES = [
   },
 ];
 
-const ADD_WAYS = [
+const ADD_STEPS = [
   {
-    icon: FileJson,
-    title: 'No code: load a file',
-    text: 'Connect the keyboard, then load its VIA JSON when asked. It works at once and stays in your browser.',
+    title: 'Get its definition file',
+    text: 'Every VIA keyboard has one .json file. It is on the maker’s support page, usually called “VIA JSON”.',
   },
   {
-    icon: Terminal,
-    title: 'One command',
-    text: 'Copy a definition from the VIA collection of 2,000+ keyboards into this project.',
-    code: 'npm run add-keyboard keychron/q1',
+    title: 'Try it',
+    text: 'Open Keyboards and click “Try a definition file”. A virtual copy opens so you can see the layout is right. Your browser now recognises the real keyboard too.',
   },
   {
-    icon: Keyboard,
-    title: 'Write your own',
-    text: 'One JSON file: a name, two USB ids, the matrix size and the layout from keyboard-layout-editor.com.',
-    code: 'keyboards/my-brand/my-board.json',
+    title: 'Share it',
+    text: 'To build it in for everyone, one command puts the file in the project and checks it. Then open a pull request.',
+    code: 'npm run add-keyboard ./my-board.json',
   },
 ];
 
@@ -126,6 +125,11 @@ const FAQ = [
     question: 'Do I need an account?',
     answer:
       'No. There is no sign-up, no analytics and no server. Your keymap lives on the keyboard, and backups are files you keep.',
+  },
+  {
+    question: 'Does it work with magnetic (Hall effect) switches?',
+    answer:
+      'On Keychron HE and Lemokey HE keyboards, yes: the Switches tab sets the actuation point and rapid trigger for all keys or key by key, using the commands in Keychron’s published firmware. This part is new and has not been confirmed on every board. Other makers use their own protocols and each needs a driver.',
   },
   {
     question: 'My keyboard does not use VIA. Can it be supported?',
@@ -187,12 +191,7 @@ export function Landing({ onConnect, onDemo }: Props) {
 
       <figure className="figure container">
         <div aria-hidden>
-          <KeyboardView
-            layout={previewLayout}
-            cols={demoDefinition.matrix.cols}
-            keycodes={demoPreview.keycodes}
-            describe={demoPreview.describe}
-          />
+          <KeyboardView layout={previewLayout} legend={previewLegend} />
         </div>
         <figcaption className="figure__caption">
           Fig. 1 · The demo keyboard. No keyboard nearby?{' '}
@@ -264,23 +263,26 @@ export function Landing({ onConnect, onDemo }: Props) {
         <Eyebrow number="04">Add your keyboard</Eyebrow>
         <h2 className="section__title">Support for a new board is one file.</h2>
         <p className="section__lead">
-          OpenKeys reads the same definition files as VIA. No code to write, no build step to learn.
+          OpenKeys reads the same definition files as VIA. There is no code to write.
         </p>
-        <div className="grid grid--3">
-          {ADD_WAYS.map((way) => (
-            <article key={way.title} className="card">
-              <span className="icon-tile">
-                <way.icon size={20} aria-hidden />
-              </span>
-              <h3 className="card__title">{way.title}</h3>
-              <p className="card__text">{way.text}</p>
-              {way.code && <code className="code">{way.code}</code>}
-            </article>
+        <ol className="steps">
+          {ADD_STEPS.map((step, index) => (
+            <li key={step.title} className="step">
+              <span className="keycap">{index + 1}</span>
+              <h3 className="step__title">{step.title}</h3>
+              <p className="step__text">{step.text}</p>
+              {step.code && <code className="code">{step.code}</code>}
+            </li>
           ))}
+        </ol>
+        <div className="hero__actions">
+          <a className="btn btn--lg" href="#/keyboards">
+            Open the Keyboards page <ArrowRight size={18} aria-hidden />
+          </a>
         </div>
         <p className="section__lead section__lead--after">
-          Then run <code>npm run check</code> to validate it. The full walkthrough is in{' '}
-          <code>docs/adding-a-keyboard.md</code>.
+          Already in the VIA collection of 2,000+ keyboards? Skip step 1:{' '}
+          <code>npm run add-keyboard q1</code> finds it, adds it and checks it.
         </p>
       </section>
 

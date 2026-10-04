@@ -124,6 +124,10 @@ on the dark page.
   A to Z, separated by a soft rule. Each keyboard is an outlined button with its model and,
   in mono, its USB id; it turns yellow on hover. A search field and a row of brand chips
   sit above the list.
+- **Switches tab**: the keyboard again, with a second mono line under each legend showing
+  where the key registers (`2.0`, `0.8 RT`). Keys with their own settings get that line on
+  a vermilion chip. Clicking keys selects them in yellow; the panel below edits the
+  selection, or all keys when nothing is selected.
 - **Toast**: cream text on `--case`, bottom centre, click to dismiss.
 - **Theme switch**: a small keycap button in the header, labelled with the theme it
   switches to ("Dark" / "Light") next to a moon or sun.

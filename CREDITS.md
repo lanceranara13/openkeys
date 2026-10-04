@@ -9,8 +9,18 @@ from, followed closely, or used as a reference, and what exactly was taken.
 
 - Source: [the-via/keyboards](https://github.com/the-via/keyboards)
 - License: GPL-3.0
-- Used for: every definition file under `keyboards/`. They are copied unchanged by
-  `npm run add-keyboard`. The definition file format itself is VIA's.
+- Used for: the definition files under `keyboards/`, except the magnetic Keychron and
+  Lemokey ones listed next. They are copied unchanged by `npm run add-keyboard`. The
+  definition file format itself is VIA's.
+
+### Keychron and Lemokey magnetic keyboard definitions
+
+- Source: [Keychron/qmk_firmware](https://github.com/Keychron/qmk_firmware), the `via_json`
+  folders of its Keychron and Lemokey HE keyboards
+- License: GPL-2.0-or-later
+- Used for: the definition files in `keyboards/keychron/*_he/` and `keyboards/lemokey/`.
+  Each is the upstream file with one line added, `"analog": "keychron"`, which tells
+  OpenKeys how the keyboard's magnetic switches are configured.
 
 ### kle-serial
 
@@ -64,6 +74,17 @@ projects below. Without them it could not talk to a keyboard.
   ids and report layout in `src/drivers/via.ts`, and the firmware behaviour that
   `src/transports/virtual.ts` imitates.
 - `quantum/keycodes.h`: the keycode numbers in `src/core/keycodes.ts`.
+
+### Keychron's QMK Firmware
+
+- Source: [Keychron/qmk_firmware](https://github.com/Keychron/qmk_firmware)
+- License: GPL-2.0-or-later
+- `keyboards/keychron/common/keychron_raw_hid.c` and
+  `keyboards/keychron/common/analog_matrix/` (`analog_matrix.c`, `analog_matrix_type.h`,
+  `analog_matrix_eeconfig.h`, `profile.c`): the commands for magnetic switch settings.
+  Command ids, the layout of a profile and of a key's settings, and the default values in
+  `src/drivers/keychron-analog.ts`, and the firmware behaviour that
+  `src/transports/virtual.ts` imitates for them.
 
 ### VIA
 

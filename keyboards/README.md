@@ -12,5 +12,10 @@ npm run check                             # validate everything in this folder
 
 The file format and a walkthrough are in [docs/adding-a-keyboard.md](../docs/adding-a-keyboard.md).
 
-Files copied from [the-via/keyboards](https://github.com/the-via/keyboards) keep their
-GPL-3.0 license.
+Where the files come from, and their licenses:
+
+- Most are copied unchanged from [the-via/keyboards](https://github.com/the-via/keyboards)
+  (GPL-3.0).
+- The magnetic Keychron boards (`keychron/*_he/`) and `lemokey/` come from
+  [Keychron/qmk_firmware](https://github.com/Keychron/qmk_firmware) (GPL-2.0-or-later),
+  each with one line added: `"analog": "keychron"`.

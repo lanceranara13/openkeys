@@ -54,6 +54,8 @@ export function createDemoTransport(): Transport {
     cols: demoDefinition.matrix.cols,
     layers: [BASE, FUNCTION, EMPTY, EMPTY].map(readLayer),
     protocolVersion: PROTOCOL_VERSION,
+    // The demo has magnetic switches, so the Switches tab can be tried without hardware.
+    analog: true,
   });
   return createVirtualTransport(keyboard, {
     name: demoDefinition.name,

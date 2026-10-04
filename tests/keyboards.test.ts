@@ -5,7 +5,7 @@ import { brandName, modelName, scanKeyboards } from '../build/keyboard-index';
 import { parseDefinition } from '../src/core/definition';
 import { groupByBrand, searchKeyboards, type KeyboardEntry } from '../src/core/keyboard-list';
 import { resolveLayout } from '../src/core/kle';
-import { drivers } from '../src/drivers';
+import { analogProtocols, drivers } from '../src/drivers';
 
 // Runs every file in keyboards/ through the same code the app uses, so a broken
 // definition fails `npm run check` instead of failing for a user.
@@ -98,6 +98,7 @@ describe('keyboards/', () => {
     expect(definition.vendorId).toBe(entry.vendorId);
     expect(definition.productId).toBe(entry.productId);
     expect(drivers.map((driver) => driver.id)).toContain(definition.protocol);
+    if (definition.analog !== null) expect(analogProtocols).toContain(definition.analog);
 
     // The standard layout and every choice of every layout option must draw.
     const standard = resolveLayout(definition.layout);

@@ -68,6 +68,12 @@ export default function App() {
               openConfigurator();
               void session.connectPreview(path);
             }}
+            onTryFile={(file) => {
+              // A file with a problem keeps the user here, next to the message about it.
+              void session.previewFile(file).then((good) => {
+                if (good) openConfigurator();
+              });
+            }}
           />
         )}
         {route === 'configure' && <Configurator session={session} />}

@@ -1,5 +1,5 @@
-import { Search } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { FileJson, Search } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { deviceKey } from '../core/definition';
 import { groupByBrand, searchKeyboards } from '../core/keyboard-list';
 import { bundledKeyboards } from '../core/registry';
@@ -7,6 +7,8 @@ import { bundledKeyboards } from '../core/registry';
 interface Props {
   /** Opens a virtual copy of a built-in keyboard, by its path in `keyboards/`. */
   onPreview: (path: string) => void;
+  /** Checks a definition file and opens a virtual copy of the keyboard it describes. */
+  onTryFile: (file: File) => void;
 }
 
 const allBrands = groupByBrand(bundledKeyboards);
@@ -15,8 +17,9 @@ const brandAnchor = (brand: string) => `brand-${brand.toLowerCase().replace(/[^a
 const plural = (count: number, word: string) => `${count} ${word}${count === 1 ? '' : 's'}`;
 
 /** Every built-in keyboard, by brand, with a search across brand, model and USB id. */
-export function KeyboardsPage({ onPreview }: Props) {
+export function KeyboardsPage({ onPreview, onTryFile }: Props) {
   const [query, setQuery] = useState('');
+  const fileInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -36,10 +39,32 @@ export function KeyboardsPage({ onPreview }: Props) {
         </h1>
         <p className="section__lead">
           These are recognised the moment you connect them. Click one to open a virtual copy and
-          look around. Not listed? Any VIA keyboard works with one file:{' '}
-          <a href="#add">add yours</a>.
+          look around.
         </p>
       </header>
+
+      <div className="card catalog__add">
+        <p>
+          <strong>Not listed?</strong> Any VIA keyboard works with its definition file. Try the file
+          here: a virtual copy opens, and the real keyboard is recognised in this browser from then
+          on. <a href="#add">How to add it for everyone.</a>
+        </p>
+        <button type="button" className="btn" onClick={() => fileInput.current?.click()}>
+          <FileJson size={16} aria-hidden /> Try a definition file
+        </button>
+        <input
+          ref={fileInput}
+          type="file"
+          accept=".json,application/json"
+          hidden
+          onChange={(event) => {
+            const file = event.target.files?.[0];
+            // Clear the input so picking the same file again fires a change.
+            event.target.value = '';
+            if (file) onTryFile(file);
+          }}
+        />
+      </div>
 
       <div className="catalog__tools">
         <label className="field field--search">
@@ -77,8 +102,8 @@ export function KeyboardsPage({ onPreview }: Props) {
 
       {brands.length === 0 ? (
         <p className="card">
-          No built-in keyboard matches “{query.trim()}”. It can still work: connect it and load its
-          VIA definition file, or <a href="#add">add it to OpenKeys</a>.
+          No built-in keyboard matches “{query.trim()}”. It can still work: use{' '}
+          <strong>Try a definition file</strong> above.
         </p>
       ) : (
         brands.map((group) => (

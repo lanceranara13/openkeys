@@ -12,6 +12,11 @@ export interface KeyboardDefinition {
   productId: number;
   /** Which driver talks to this keyboard (see src/drivers). Defaults to "via". */
   protocol: string;
+  /**
+   * How the keyboard's magnetic switches are configured, e.g. "keychron". null leaves
+   * it to the driver, which recognises the makers it knows by their USB vendor id.
+   */
+  analog: string | null;
   matrix: { rows: number; cols: number };
   layout: ParsedLayout;
   layoutOptions: LayoutOption[];
@@ -110,6 +115,7 @@ export function parseDefinition(raw: unknown): KeyboardDefinition {
     vendorId: readUsbId(raw.vendorId, 'vendorId'),
     productId: readUsbId(raw.productId, 'productId'),
     protocol: typeof raw.protocol === 'string' ? raw.protocol : 'via',
+    analog: typeof raw.analog === 'string' ? raw.analog : null,
     matrix,
     layout,
     layoutOptions: readLayoutOptions(raw.layouts.labels),

@@ -20,6 +20,42 @@ export interface Transport {
   close(): Promise<void>;
 }
 
+/** How one magnetic switch behaves. Distances are in tenths of a millimetre. */
+export interface TravelSettings {
+  /** Rapid trigger: the key lets go as soon as it moves back up, wherever it is. */
+  rapidTrigger: boolean;
+  /** How far down the key registers. */
+  actuation: number;
+  /** Rapid trigger only: how far down the key has to move to register again. */
+  pressSensitivity: number;
+  /** Rapid trigger only: how far up the key has to move to let go. */
+  releaseSensitivity: number;
+}
+
+export interface AnalogState {
+  profile: number;
+  profileCount: number;
+  /** The settings of every key that has none of its own. */
+  global: TravelSettings;
+  /** Per key, indexed by `row * cols + col`. null: the key follows `global`. */
+  keys: (TravelSettings | null)[];
+}
+
+/** Magnetic (Hall effect) switch settings, on keyboards that have them. */
+export interface AnalogSupport {
+  /** Smallest and largest value to offer, in tenths of a millimetre. */
+  limits: { actuation: [number, number]; sensitivity: [number, number] };
+  read(): Promise<AnalogState>;
+  setGlobal(settings: TravelSettings): Promise<void>;
+  /** `settings: null` makes the keys follow the keyboard-wide settings again. */
+  setKeys(keys: { row: number; col: number }[], settings: TravelSettings | null): Promise<void>;
+  selectProfile(profile: number): Promise<void>;
+  /** Makes the current profile survive a power cycle. */
+  save(): Promise<void>;
+  /** Puts the current profile back to how the keyboard shipped. */
+  reset(): Promise<void>;
+}
+
 export interface DriverInfo {
   protocolName: string;
   protocolVersion: number;
@@ -28,6 +64,8 @@ export interface DriverInfo {
   supportsMenus: boolean;
   /** The keycodes this keyboard understands. */
   catalog: KeycodeCatalog;
+  /** Present on keyboards with magnetic switches OpenKeys can configure. */
+  analog: AnalogSupport | null;
 }
 
 /**
