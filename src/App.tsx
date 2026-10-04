@@ -1,5 +1,5 @@
 import { CircleCheck, TriangleAlert } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { openConfigurator, useHashRoute } from './app/useHashRoute';
 import { useSession, type Notice } from './app/useSession';
 import { useTheme } from './app/useTheme';
@@ -7,8 +7,13 @@ import { Configurator } from './components/Configurator';
 import { ContributePage } from './components/ContributePage';
 import { Footer } from './components/Footer';
 import { Header } from './components/Header';
-import { KeyboardsPage } from './components/KeyboardsPage';
 import { Landing } from './components/Landing';
+
+// The Keyboards page carries the list of every built-in keyboard, so it is a chunk of
+// its own and the other pages do not wait for it.
+const KeyboardsPage = lazy(() =>
+  import('./components/KeyboardsPage').then((module) => ({ default: module.KeyboardsPage })),
+);
 
 const TOAST_MS = { ok: 3500, error: 9000 };
 
@@ -71,13 +76,21 @@ export default function App() {
           />
         )}
         {route === 'keyboards' && (
-          <KeyboardsPage
-            onPreview={(path) => {
-              openConfigurator();
-              void session.connectPreview(path);
-            }}
-            onTryFile={tryFile}
-          />
+          <Suspense
+            fallback={
+              <div className="container page">
+                <p className="eyebrow">Loading the keyboard list…</p>
+              </div>
+            }
+          >
+            <KeyboardsPage
+              onPreview={(path) => {
+                openConfigurator();
+                void session.connectPreview(path);
+              }}
+              onTryFile={tryFile}
+            />
+          </Suspense>
         )}
         {route === 'contribute' && <ContributePage onTryFile={tryFile} />}
         {route === 'configure' && <Configurator session={session} />}

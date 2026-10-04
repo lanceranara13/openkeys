@@ -5,3 +5,8 @@ declare module 'virtual:keyboard-index' {
   const index: import('./core/keyboard-list').KeyboardEntry[];
   export default index;
 }
+
+declare module 'virtual:keyboard-summary' {
+  const summary: import('./core/keyboard-list').KeyboardSummary;
+  export default summary;
+}

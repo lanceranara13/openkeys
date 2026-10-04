@@ -1,10 +1,17 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import type { Plugin } from 'vite';
-import type { KeyboardEntry } from '../src/core/keyboard-list.ts';
+import type { KeyboardEntry, KeyboardSummary } from '../src/core/keyboard-list.ts';
 
-const VIRTUAL_ID = 'virtual:keyboard-index';
-const RESOLVED_ID = '\0' + VIRTUAL_ID;
+const INDEX_ID = 'virtual:keyboard-index';
+const SUMMARY_ID = 'virtual:keyboard-summary';
+const VIRTUAL_IDS = [INDEX_ID, SUMMARY_ID];
+const resolved = (id: string) => '\0' + id;
+
+// How many brands the landing page names.
+const SUMMARY_BRANDS = 12;
+// Folders of the VIA collection for boards without a maker: not brands worth naming.
+const CATCH_ALL_BRANDS = new Set(['Other', 'Handwired']);
 
 // Brand of definitions that sit directly in keyboards/, outside any folder.
 const NO_BRAND = 'Other';
@@ -118,31 +125,60 @@ export function scanKeyboards(dir: string): KeyboardEntry[] {
     .sort((a, b) => collator.compare(a.brand, b.brand) || collator.compare(a.model, b.model));
 }
 
+/** Counts the keyboards and names the `count` largest brands. */
+export function summarizeKeyboards(entries: readonly KeyboardEntry[], count: number): KeyboardSummary {
+  const sizes = new Map<string, number>();
+  for (const { brand } of entries) sizes.set(brand, (sizes.get(brand) ?? 0) + 1);
+  return {
+    keyboards: entries.length,
+    brands: sizes.size,
+    largest: [...sizes]
+      .filter(([brand]) => !CATCH_ALL_BRANDS.has(brand))
+      .map(([brand, keyboards]) => ({ brand, keyboards }))
+      // The sort is stable: brands of the same size keep the order of the list, A to Z.
+      .sort((a, b) => b.keyboards - a.keyboards)
+      .slice(0, count),
+  };
+}
+
 /**
- * Exposes `virtual:keyboard-index`: a small list of every keyboard in `keyboards/`.
- * The app ships this list up front and lazy-loads the full definition on connect,
- * so the folder can grow to thousands of boards without growing the first load.
+ * Exposes two modules made from `keyboards/`:
+ *   - `virtual:keyboard-index`: one line per keyboard. With thousands of boards it is
+ *     too big for the first load; the app fetches it when the list is needed.
+ *   - `virtual:keyboard-summary`: the few numbers the landing page shows, shipped up front.
+ * The full definitions are chunks of their own, loaded on connect, so the folder can
+ * keep growing without growing the first load.
  */
 export function keyboardIndex(): Plugin {
   let dir = '';
+  // Both modules come from one pass over the folder.
+  let scanned: KeyboardEntry[] | null = null;
+  const scan = () => (scanned ??= scanKeyboards(dir));
+
   return {
     name: 'openkeys:keyboard-index',
     configResolved(config) {
       dir = path.resolve(config.root, 'keyboards');
     },
     resolveId(id) {
-      return id === VIRTUAL_ID ? RESOLVED_ID : undefined;
+      return VIRTUAL_IDS.includes(id) ? resolved(id) : undefined;
     },
     load(id) {
-      if (id !== RESOLVED_ID) return undefined;
-      return `export default ${JSON.stringify(scanKeyboards(dir))};`;
+      if (id === resolved(INDEX_ID)) return `export default ${JSON.stringify(scan())};`;
+      if (id === resolved(SUMMARY_ID)) {
+        return `export default ${JSON.stringify(summarizeKeyboards(scan(), SUMMARY_BRANDS))};`;
+      }
+      return undefined;
     },
     configureServer(server) {
       server.watcher.add(dir);
       const refresh = (file: string) => {
         if (!file.endsWith('.json') || !path.resolve(file).startsWith(dir)) return;
-        const mod = server.moduleGraph.getModuleById(RESOLVED_ID);
-        if (mod) server.moduleGraph.invalidateModule(mod);
+        scanned = null;
+        for (const id of VIRTUAL_IDS) {
+          const mod = server.moduleGraph.getModuleById(resolved(id));
+          if (mod) server.moduleGraph.invalidateModule(mod);
+        }
         server.ws.send({ type: 'full-reload' });
       };
       server.watcher.on('add', refresh);

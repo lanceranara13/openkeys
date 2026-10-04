@@ -10,9 +10,8 @@ import {
   Usb,
 } from 'lucide-react';
 import { useEffect } from 'react';
-import { groupByBrand } from '../core/keyboard-list';
+import summary from 'virtual:keyboard-summary';
 import { resolveLayout } from '../core/kle';
-import { bundledKeyboards } from '../core/registry';
 import { demoDefinition, demoPreview } from '../demo';
 import { KeyboardView, keymapLegend } from './KeyboardView';
 
@@ -27,9 +26,9 @@ const previewLegend = keymapLegend(
   demoDefinition.matrix.cols,
   demoPreview.describe,
 );
-const brands = groupByBrand(bundledKeyboards);
-// The landing page only names a few brands; the Keyboards page lists everything.
-const MAX_BRANDS = 12;
+// The landing page only counts the keyboards and names the largest brands; the Keyboards
+// page lists everything. The list itself is too big to load here.
+const builtIn = summary.keyboards.toLocaleString('en-US');
 
 /** The fact sheet beside the headline. */
 const SPEC = [
@@ -38,7 +37,7 @@ const SPEC = [
   ['Price', 'Free, open source'],
   ['Works with', 'QMK + VIA keyboards'],
   ['Browsers', 'Chrome, Edge, Opera, Brave'],
-  ['Built in', `${bundledKeyboards.length} keyboards`],
+  ['Built in', `${builtIn} keyboards`],
 ];
 
 const STEPS = [
@@ -108,12 +107,12 @@ const FAQ = [
   {
     question: 'Which keyboards work?',
     answer:
-      'Keyboards running QMK firmware with VIA enabled. That covers the Keychron Q and V series, the GMMK Pro and thousands of custom boards. If yours is not built in, load its VIA definition file and it works the same.',
+      'Keyboards running QMK firmware with VIA enabled. That covers the Keychron Q, V and K series, NuPhy, the GMMK Pro and thousands of custom boards. If yours is not built in, load its VIA definition file and it works the same. Royal Kludge keyboards that use the RK software, and the Akko 5075B Plus, work through drivers of their own; those are newer and less tested.',
   },
   {
     question: 'Can this break my keyboard?',
     answer:
-      'OpenKeys only changes the keymap and lighting settings, with the same commands VIA uses. It never flashes firmware. If a layout goes wrong, “Reset keymap” puts every key back to how the keyboard shipped.',
+      'OpenKeys only changes the keymap and lighting settings, with the same commands VIA or the maker’s own software uses. It never flashes firmware. If a layout goes wrong, “Reset keymap” puts every key back to how the keyboard shipped.',
   },
   {
     question: 'Why does it not work in Firefox or Safari?',
@@ -234,26 +233,27 @@ export function Landing({ onConnect, onDemo }: Props) {
       <section id="keyboards" className="section container">
         <Eyebrow number="03">Supported keyboards</Eyebrow>
         <h2 className="section__title">
-          <span className="hl">{bundledKeyboards.length} built in.</span> Any VIA keyboard with one
-          file.
+          <span className="hl">{builtIn} built in.</span> Any VIA keyboard with one file.
         </h2>
         <p className="section__lead">
           Built-in keyboards are recognised the moment you connect them. Anything else works by
           loading its VIA definition file.
         </p>
         <ul className="boards">
-          {brands.slice(0, MAX_BRANDS).map((group) => (
-            <li key={group.brand} className="tag">
-              {group.brand} · {group.keyboards.length}
+          {summary.largest.map((item) => (
+            <li key={item.brand} className="tag">
+              {item.brand} · {item.keyboards}
             </li>
           ))}
-          {brands.length > MAX_BRANDS && (
-            <li className="boards__more">and {brands.length - MAX_BRANDS} more brands</li>
+          {summary.brands > summary.largest.length && (
+            <li className="boards__more">
+              and {summary.brands - summary.largest.length} more brands
+            </li>
           )}
         </ul>
         <div className="hero__actions">
           <a className="btn btn--lg" href="#/keyboards">
-            Browse all {bundledKeyboards.length} keyboards <ArrowRight size={18} aria-hidden />
+            Browse all {builtIn} keyboards <ArrowRight size={18} aria-hidden />
           </a>
         </div>
       </section>

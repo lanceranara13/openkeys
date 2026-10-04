@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { brandName, modelName, scanKeyboards } from '../build/keyboard-index';
+import { brandName, modelName, scanKeyboards, summarizeKeyboards } from '../build/keyboard-index';
 import { parseDefinition } from '../src/core/definition';
 import { groupByBrand, searchKeyboards, type KeyboardEntry } from '../src/core/keyboard-list';
 import { resolveLayout } from '../src/core/kle';
@@ -82,6 +82,25 @@ describe('keyboard list', () => {
     // A short number is part of a model name, not a piece of a USB id.
     expect(models('iris 8')).toEqual(['Iris Rev. 8']);
     expect(models('keychron 4')).toEqual([]);
+  });
+
+  it('counts keyboards and names the largest brands, without the catch-all folders', () => {
+    const boards = [
+      ...list,
+      entry('Other', 'A', 0x0200),
+      entry('Other', 'B', 0x0201),
+      entry('Other', 'C', 0x0202),
+      entry('Zeal', 'Z60', 0x0300),
+    ];
+    expect(summarizeKeyboards(boards, 2)).toEqual({
+      keyboards: 7,
+      brands: 4,
+      // Brands of the same size stay A to Z.
+      largest: [
+        { brand: 'Keychron', keyboards: 2 },
+        { brand: 'Keebio', keyboards: 1 },
+      ],
+    });
   });
 });
 

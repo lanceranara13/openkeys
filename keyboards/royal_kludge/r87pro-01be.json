@@ -1,0 +1,199 @@
+{
+  "name": "Royal Kludge R87PRO",
+  "vendorId": "0x258A",
+  "productId": "0x01BE",
+  "protocol": "royal-kludge",
+  "matrix": {
+    "rows": 6,
+    "cols": 17
+  },
+  "defaultKeymap": [41,53,43,57,131072,65536,58,30,20,4,29,524288,59,31,26,22,27,262144,60,32,8,7,6,0,61,33,21,9,25,0,62,34,23,10,5,44,63,35,28,11,17,0,64,36,24,13,16,0,65,37,12,14,54,4194304,66,38,18,15,55,176,67,39,19,51,56,101,68,45,47,52,0,0,69,46,48,0,0,0,16777618,42,49,40,2097152,1048576,70,73,76,0,0,80,71,74,77,0,82,81,72,75,78,0,16777442,79],
+  "menus": [
+    {
+      "label": "Lighting",
+      "content": [
+        {
+          "label": "RGB lighting",
+          "content": [
+            {
+              "label": "Effect",
+              "type": "dropdown",
+              "options": [
+                [
+                  "Neon Stream",
+                  1
+                ],
+                [
+                  "Ripples Shining",
+                  2
+                ],
+                [
+                  "Rotating Windmill",
+                  3
+                ],
+                [
+                  "Sine Wave",
+                  4
+                ],
+                [
+                  "Rainbow Roulette",
+                  5
+                ],
+                [
+                  "Stars Twinkle",
+                  6
+                ],
+                [
+                  "Layer Upon Layer",
+                  7
+                ],
+                [
+                  "Rich And Honored",
+                  8
+                ],
+                [
+                  "Marquee Effect",
+                  9
+                ],
+                [
+                  "Rotating Storm",
+                  10
+                ],
+                [
+                  "Serpentine Horse Race",
+                  11
+                ],
+                [
+                  "Retro Snake",
+                  12
+                ],
+                [
+                  "Diagonal Transformation",
+                  13
+                ],
+                [
+                  "Customize",
+                  14
+                ],
+                [
+                  "Ambilight",
+                  15
+                ],
+                [
+                  "Streamer",
+                  16
+                ],
+                [
+                  "Steady",
+                  17
+                ],
+                [
+                  "Neon",
+                  19
+                ],
+                [
+                  "Shadow Disappear",
+                  20
+                ]
+              ],
+              "content": [
+                "id_rk_effect_number",
+                0,
+                1
+              ]
+            },
+            {
+              "label": "Brightness",
+              "type": "range",
+              "options": [
+                0,
+                5
+              ],
+              "content": [
+                "id_rk_level",
+                0,
+                2
+              ],
+              "showIf": "{id_rk_effect_number} == 1 || {id_rk_effect_number} == 2 || {id_rk_effect_number} == 3 || {id_rk_effect_number} == 4 || {id_rk_effect_number} == 5 || {id_rk_effect_number} == 6 || {id_rk_effect_number} == 7 || {id_rk_effect_number} == 8 || {id_rk_effect_number} == 9 || {id_rk_effect_number} == 10 || {id_rk_effect_number} == 11 || {id_rk_effect_number} == 12 || {id_rk_effect_number} == 13 || {id_rk_effect_number} == 14 || {id_rk_effect_number} == 15 || {id_rk_effect_number} == 16 || {id_rk_effect_number} == 17"
+            },
+            {
+              "label": "Effect speed",
+              "type": "range",
+              "options": [
+                1,
+                5
+              ],
+              "content": [
+                "id_rk_speed",
+                0,
+                3
+              ],
+              "showIf": "{id_rk_effect_number} == 2 || {id_rk_effect_number} == 3 || {id_rk_effect_number} == 4 || {id_rk_effect_number} == 5 || {id_rk_effect_number} == 6 || {id_rk_effect_number} == 7 || {id_rk_effect_number} == 8 || {id_rk_effect_number} == 9 || {id_rk_effect_number} == 10 || {id_rk_effect_number} == 11 || {id_rk_effect_number} == 12 || {id_rk_effect_number} == 13 || {id_rk_effect_number} == 14 || {id_rk_effect_number} == 15 || {id_rk_effect_number} == 16 || {id_rk_effect_number} == 17"
+            },
+            {
+              "label": "Color",
+              "type": "color",
+              "content": [
+                "id_rk_color",
+                0,
+                4
+              ],
+              "showIf": "{id_rk_effect_number} == 1 || {id_rk_effect_number} == 2 || {id_rk_effect_number} == 4 || {id_rk_effect_number} == 5 || {id_rk_effect_number} == 6 || {id_rk_effect_number} == 7 || {id_rk_effect_number} == 8 || {id_rk_effect_number} == 9 || {id_rk_effect_number} == 10 || {id_rk_effect_number} == 11 || {id_rk_effect_number} == 12 || {id_rk_effect_number} == 13 || {id_rk_effect_number} == 14"
+            },
+            {
+              "label": "Random colors",
+              "type": "toggle",
+              "content": [
+                "id_rk_random",
+                0,
+                5
+              ],
+              "showIf": "{id_rk_effect_number} == 1 || {id_rk_effect_number} == 2 || {id_rk_effect_number} == 4 || {id_rk_effect_number} == 5 || {id_rk_effect_number} == 6 || {id_rk_effect_number} == 7 || {id_rk_effect_number} == 8 || {id_rk_effect_number} == 9 || {id_rk_effect_number} == 10 || {id_rk_effect_number} == 11 || {id_rk_effect_number} == 12 || {id_rk_effect_number} == 13 || {id_rk_effect_number} == 14"
+            },
+            {
+              "label": "Lights sleep after",
+              "type": "dropdown",
+              "options": [
+                [
+                  "5 minutes",
+                  1
+                ],
+                [
+                  "10 minutes",
+                  2
+                ],
+                [
+                  "20 minutes",
+                  3
+                ],
+                [
+                  "30 minutes",
+                  4
+                ],
+                [
+                  "Never",
+                  5
+                ]
+              ],
+              "content": [
+                "id_rk_sleep",
+                0,
+                6
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "layouts": {
+    "keymap": [
+      [{"c":"#777777"},"0,0",{"x":0.25,"c":"#aaaaaa"},"0,1","0,2","0,3","0,4",{"x":0.25},"0,5","0,6","0,7","0,8",{"x":0.25},"0,9","0,10","0,11","0,12",{"x":0.25},"0,13",{"x":0.25},"0,14","0,15","0,16"],
+      [{"y":0.25,"c":"#cccccc"},"1,0","1,1","1,2","1,3","1,4","1,5","1,6","1,7","1,8","1,9","1,10","1,11","1,12",{"c":"#aaaaaa","w":2},"1,13",{"x":0.25},"1,14","1,15","1,16"],
+      [{"w":1.5},"2,0",{"c":"#cccccc"},"2,1","2,2","2,3","2,4","2,5","2,6","2,7","2,8","2,9","2,10","2,11","2,12",{"w":1.5},"2,13",{"x":0.25,"c":"#aaaaaa"},"2,14","2,15","2,16"],
+      [{"w":1.75},"3,0",{"c":"#cccccc"},"3,1","3,2","3,3","3,4","3,5","3,6","3,7","3,8","3,9","3,10","3,11",{"c":"#777777","w":2.25},"3,13"],
+      [{"c":"#aaaaaa","w":2.25},"4,0",{"c":"#cccccc"},"4,1","4,2","4,3","4,4","4,5","4,6","4,7","4,8","4,9","4,10",{"c":"#aaaaaa","w":2.75},"4,13",{"x":1.25},"4,15"],
+      [{"w":1.25},"5,0",{"w":1.25},"5,1",{"w":1.25},"5,2",{"c":"#cccccc","w":6.25},"5,5",{"c":"#aaaaaa","w":1.25},"5,8",{"w":1.25},"5,9",{"w":1.25},"5,10",{"w":1.25},"5,13",{"x":0.25},"5,14","5,15","5,16"]
+    ]
+  }
+}

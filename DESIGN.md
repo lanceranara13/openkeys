@@ -122,8 +122,12 @@ on the dark page.
 - **Code**: inline code is a soft grey chip; blocks are cream text on `--case`.
 - **Keyboard list** (`.brand`, `.boards__item`): the Keyboards page. One section per brand,
   A to Z, separated by a soft rule. Each keyboard is an outlined button with its model and,
-  in mono, its USB id; it turns yellow on hover. A search field and a row of brand chips
-  sit above the list.
+  in mono, its USB id; it turns yellow on hover. A search field sits above the list, and
+  under it a row of chips, one per first letter, each with its number of brands. With
+  hundreds of brands a chip per brand would be a wall of chips.
+- **Notice** (`.notice`): a card under the device bar with a yellow `Note` tag and one
+  short paragraph. A driver shows it when the keyboard has a limit the user has to know
+  before changing anything, for instance that it cannot report what it holds.
 - **Switches tab**: the keyboard again, with a second mono line under each legend showing
   where the key registers (`2.0`, `0.8 RT`). Keys with their own settings get that line on
   a vermilion chip. Clicking keys selects them in yellow; the panel below edits the

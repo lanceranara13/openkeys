@@ -18,9 +18,12 @@ export interface Transport {
   onReport(listener: (report: Uint8Array) => void): () => void;
   onDisconnect(listener: () => void): () => void;
   close(): Promise<void>;
-  /** Feature reports, for keyboards that are configured through them instead. */
-  sendFeature?(report: Uint8Array): Promise<void>;
-  receiveFeature?(): Promise<Uint8Array>;
+  /**
+   * Feature reports, for keyboards that are configured through them instead.
+   * `reportId` is 0 on keyboards that do not number their reports.
+   */
+  sendFeature?(report: Uint8Array, reportId?: number): Promise<void>;
+  receiveFeature?(reportId?: number): Promise<Uint8Array>;
 }
 
 /** How one magnetic switch behaves. Distances are in tenths of a millimetre. */
@@ -69,6 +72,11 @@ export interface DriverInfo {
   catalog: KeycodeCatalog;
   /** Present on keyboards with magnetic switches OpenKeys can configure. */
   analog: AnalogSupport | null;
+  /**
+   * What the user has to know before changing anything, on keyboards with a limit that
+   * matters. For instance: the keyboard cannot report what it holds.
+   */
+  notice?: string;
 }
 
 /**

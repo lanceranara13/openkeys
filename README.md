@@ -5,7 +5,7 @@ VIA-compatible keyboard, with nothing to install and no account.
 
 - **Works over WebHID.** The page talks straight to the keyboard. No server, no tracking.
 - **One file per keyboard.** Support for a board is a JSON file in [`keyboards/`](keyboards/),
-  in the same format VIA uses, so 2,000+ existing definitions work as they are.
+  in the same format VIA uses. More than 2,300 keyboards from 600 brands are built in.
 - **Demo keyboard built in.** Everything can be tried, and tested, without hardware.
 
 ## Use it
@@ -76,10 +76,13 @@ Then `npm run dev`, open **Keyboards** and click it to see it. Nothing else need
 ```
 keyboards/            one JSON definition per keyboard, picked up automatically
 src/core/             definition parser, layout (KLE) parser, keycodes, menus, backups
+scripts/              add-keyboard.mjs copies a VIA definition into keyboards/,
+                      import-royal-kludge.mjs builds the Royal Kludge ones
 src/drivers/          one driver per protocol. via.ts speaks QMK/VIA,
                       keychron-analog.ts adds Keychron's magnetic switch commands,
-                      yichip.ts speaks Akko's own protocol
-src/transports/       webhid.ts for real keyboards, virtual.ts emulates firmware in memory
+                      yichip.ts speaks Akko's own protocol,
+                      royal-kludge.ts speaks Royal Kludge's
+src/transports/       webhid.ts for real keyboards, virtual*.ts emulate firmware in memory
 src/demo/             the demo keyboard
 src/app/              connection state (useSession) and routing
 src/components/       the interface
@@ -102,10 +105,10 @@ from touching interface code. The look of the app is described in [DESIGN.md](DE
   rule (the same one VIA documents).
 - **One app at a time:** close VIA or vendor software before connecting. Only one program
   can hold the keyboard.
-- **Firmware:** the keyboard must run QMK with VIA enabled. Lighting controls need VIA
+- **Firmware:** a VIA keyboard must run QMK with VIA enabled. Lighting controls need VIA
   protocol 11 or newer (QMK 0.19+). Older firmware still gets key remapping.
 - **Magnetic switches:** the Switches tab works with Keychron HE and Lemokey HE keyboards;
-  21 of them are built in. It is written from Keychron's published firmware and tested
+  36 of them are built in. It is written from Keychron's published firmware and tested
   against an emulator of it, **not yet on real hardware**, so treat it as experimental.
   "Reset switches" restores factory settings. Keyboards that keep these settings in VIA
   menus (keyboard-wide, not per key) show them as ordinary tabs.
@@ -116,10 +119,37 @@ from touching interface code. The look of the app is described in [DESIGN.md](DE
   definition file; that part is tested against an emulator only. Not yet: the Fn layer,
   lighting, macros, and the 2.4G dongle (connect by cable). Other models on the same
   firmware need only a definition file with their `deviceId` and default keys.
+- **Royal Kludge (non-VIA):** 139 models that are configured with the "RK Keyboard"
+  Windows software (USB vendor `258A`) work through a third driver
+  (`src/drivers/royal-kludge.ts`): key remapping on the base layer, and the lighting
+  effect, brightness, speed, colour and sleep time. Two things to know:
+  - These keyboards **cannot be read**. OpenKeys shows the keys a model shipped with, or
+    what it last stored from the same browser, and a change sends every key again. That
+    replaces remapping done with other software. "Reset keymap" sends the defaults.
+  - It is **experimental**. The bytes are the ones [Rangoli](https://github.com/rnayabed/rangoli)
+    and [Kludge Knight](https://github.com/vinc3m1/kludgeknight) send, and the key
+    positions come from the vendor's own configuration files, but OpenKeys has not tried
+    them on a real keyboard. Rangoli lists four models as confirmed and most as "should
+    work". Left out: four models Rangoli reports as broken, and about 50 newer ones (S98,
+    S85, M87, M65, M70, L75, L98, R98 Pro, RK F75 and relatives) whose files use codes no
+    open project has confirmed. Not yet: the Fn layer, per-key colours, macros. Rangoli
+    notes that Royal Kludge models with another vendor id, such as `0C45`, use a
+    different protocol; those are not covered.
 - **Other brands:** a keyboard works when it runs QMK with VIA, whatever the brand. The
-  QMK/VIA models of Akko and MonsGeek are built in. Magnetic models of Akko, MonsGeek,
-  Epomaker, Womier and DrunkDeer run a related firmware that numbers its commands
-  differently; it has no driver yet. Aula keyboards use a closed protocol.
+  whole VIA collection is built in, plus Keychron's, Lemokey's and NuPhy's own files. A
+  QMK/VIA model that is not listed (Epomaker, Womier, the QMK models of Royal Kludge)
+  works with the VIA file from its maker: open **Keyboards** and click **Try a definition
+  file**. Magnetic models of Akko, MonsGeek, Epomaker, Womier and DrunkDeer run a related
+  firmware that numbers its commands differently; it has no driver yet.
+- **Aula:** not supported, and not for lack of documentation. Three open projects describe
+  the F75, and they disagree. Two different keyboards are sold under that name (wired
+  `258A:010C` with 519-byte feature reports, and `3554:FA09` with 20-byte reports). For
+  the first, [openaula](https://github.com/not-ayan/openaula) and
+  [aula-f75](https://github.com/RustamSheoran/aula-f75) give different headers for the
+  report that writes the keymap and put the Fn key at different positions (53 and 59).
+  The keymap is written as one whole table, and openaula ships a tool to repair Fn keys
+  that such writes destroyed. A driver needs someone with the keyboard to settle those two
+  points by reading the table first.
 
 ## Not there yet
 
@@ -128,6 +158,10 @@ from touching interface code. The look of the app is described in [DESIGN.md](DE
 - "Keycode" and "button" controls inside custom menus
 - Magnetic switches beyond the basics: dynamic keystroke, SOCD, gamepad mode, calibration
 - Magnetic keyboards other than Keychron and Lemokey
+- Royal Kludge: the Fn layer, per-key colours, and the newer models
+- Aula, and other keyboards with a protocol of their own (see "Good to know")
+- Vial keyboards without a VIA file: they carry their definition inside the firmware,
+  which OpenKeys does not read yet
 
 ## Credits
 
@@ -151,8 +185,9 @@ and comes with its source. It comes with no warranty. The full text is in
 
 Copyright (C) 2026 OpenKeys contributors.
 
-The definitions in `keyboards/` are copied from
-[the-via/keyboards](https://github.com/the-via/keyboards). They keep their own GPL-3.0
-license and their authors' copyright.
+Most definitions in `keyboards/` are copied from
+[the-via/keyboards](https://github.com/the-via/keyboards) and keep their GPL-3.0 license
+and their authors' copyright. The rest come from the makers' firmware repositories
+(GPL-2.0-or-later) or are generated; [keyboards/README.md](keyboards/README.md) says which.
 
 OpenKeys is not affiliated with VIA, QMK or any keyboard maker.

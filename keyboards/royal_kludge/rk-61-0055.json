@@ -1,0 +1,174 @@
+{
+  "name": "Royal Kludge RK-61",
+  "vendorId": "0x258A",
+  "productId": "0x0055",
+  "protocol": "royal-kludge",
+  "matrix": {
+    "rows": 6,
+    "cols": 14
+  },
+  "defaultKeymap": [0,41,43,57,131072,65536,0,30,20,4,29,524288,0,31,26,22,27,262144,0,32,8,7,6,0,0,33,21,9,25,0,0,34,23,10,5,44,0,35,28,11,17,0,0,36,24,13,16,0,0,37,12,14,54,4194304,0,38,18,15,55,101,0,39,19,51,56,1048576,0,45,47,52,0,0,0,46,48,0,0,0,0,42,49,40,2097152,176],
+  "menus": [
+    {
+      "label": "Lighting",
+      "content": [
+        {
+          "label": "RGB lighting",
+          "content": [
+            {
+              "label": "Effect",
+              "type": "dropdown",
+              "options": [
+                [
+                  "Neon Stream",
+                  1
+                ],
+                [
+                  "Ripples Shining",
+                  2
+                ],
+                [
+                  "Rotating Windmill",
+                  3
+                ],
+                [
+                  "Sine Wave",
+                  4
+                ],
+                [
+                  "Rainbow Roulette",
+                  5
+                ],
+                [
+                  "Stars Twinkle",
+                  6
+                ],
+                [
+                  "Layer Upon Layer",
+                  7
+                ],
+                [
+                  "Rich And Honored",
+                  8
+                ],
+                [
+                  "Marquee Effect",
+                  9
+                ],
+                [
+                  "Rotating Storm",
+                  10
+                ],
+                [
+                  "Serpentine Horse Race",
+                  11
+                ],
+                [
+                  "Retro Snake",
+                  12
+                ],
+                [
+                  "Diagonal Transformation",
+                  13
+                ],
+                [
+                  "Customize",
+                  14
+                ],
+                [
+                  "Ambilight",
+                  15
+                ],
+                [
+                  "Streamer",
+                  16
+                ],
+                [
+                  "Steady",
+                  17
+                ],
+                [
+                  "Breathing",
+                  18
+                ],
+                [
+                  "Neon",
+                  19
+                ],
+                [
+                  "Shadow Disappear",
+                  20
+                ],
+                [
+                  "Flash Away",
+                  21
+                ]
+              ],
+              "content": [
+                "id_rk_effect_number",
+                0,
+                1
+              ]
+            },
+            {
+              "label": "Brightness",
+              "type": "range",
+              "options": [
+                0,
+                5
+              ],
+              "content": [
+                "id_rk_level",
+                0,
+                2
+              ]
+            },
+            {
+              "label": "Effect speed",
+              "type": "range",
+              "options": [
+                1,
+                5
+              ],
+              "content": [
+                "id_rk_speed",
+                0,
+                3
+              ],
+              "showIf": "{id_rk_effect_number} == 1 || {id_rk_effect_number} == 2 || {id_rk_effect_number} == 3 || {id_rk_effect_number} == 4 || {id_rk_effect_number} == 5 || {id_rk_effect_number} == 6 || {id_rk_effect_number} == 7 || {id_rk_effect_number} == 8 || {id_rk_effect_number} == 9 || {id_rk_effect_number} == 10 || {id_rk_effect_number} == 11 || {id_rk_effect_number} == 12 || {id_rk_effect_number} == 13 || {id_rk_effect_number} == 14 || {id_rk_effect_number} == 15 || {id_rk_effect_number} == 16 || {id_rk_effect_number} == 18 || {id_rk_effect_number} == 19 || {id_rk_effect_number} == 20 || {id_rk_effect_number} == 21"
+            },
+            {
+              "label": "Color",
+              "type": "color",
+              "content": [
+                "id_rk_color",
+                0,
+                4
+              ],
+              "showIf": "{id_rk_effect_number} == 1 || {id_rk_effect_number} == 2 || {id_rk_effect_number} == 4 || {id_rk_effect_number} == 6 || {id_rk_effect_number} == 7 || {id_rk_effect_number} == 8 || {id_rk_effect_number} == 9 || {id_rk_effect_number} == 10 || {id_rk_effect_number} == 11 || {id_rk_effect_number} == 12 || {id_rk_effect_number} == 13 || {id_rk_effect_number} == 14 || {id_rk_effect_number} == 15 || {id_rk_effect_number} == 17 || {id_rk_effect_number} == 18 || {id_rk_effect_number} == 20 || {id_rk_effect_number} == 21"
+            },
+            {
+              "label": "Random colors",
+              "type": "toggle",
+              "content": [
+                "id_rk_random",
+                0,
+                5
+              ],
+              "showIf": "{id_rk_effect_number} == 1 || {id_rk_effect_number} == 2 || {id_rk_effect_number} == 4 || {id_rk_effect_number} == 6 || {id_rk_effect_number} == 7 || {id_rk_effect_number} == 8 || {id_rk_effect_number} == 9 || {id_rk_effect_number} == 10 || {id_rk_effect_number} == 11 || {id_rk_effect_number} == 12 || {id_rk_effect_number} == 13 || {id_rk_effect_number} == 14 || {id_rk_effect_number} == 15 || {id_rk_effect_number} == 17 || {id_rk_effect_number} == 18 || {id_rk_effect_number} == 20 || {id_rk_effect_number} == 21"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "layouts": {
+    "keymap": [
+      [{"c":"#777777"},"1,0",{"c":"#cccccc"},"1,1","1,2","1,3","1,4","1,5","1,6","1,7","1,8","1,9","1,10","1,11","1,12",{"c":"#aaaaaa","w":2},"1,13"],
+      [{"w":1.5},"2,0",{"c":"#cccccc"},"2,1","2,2","2,3","2,4","2,5","2,6","2,7","2,8","2,9","2,10","2,11","2,12",{"w":1.5},"2,13"],
+      [{"c":"#aaaaaa","w":1.75},"3,0",{"c":"#cccccc"},"3,1","3,2","3,3","3,4","3,5","3,6","3,7","3,8","3,9","3,10","3,11",{"c":"#777777","w":2.25},"3,13"],
+      [{"c":"#aaaaaa","w":2.25},"4,0",{"c":"#cccccc"},"4,1","4,2","4,3","4,4","4,5","4,6","4,7","4,8","4,9","4,10",{"c":"#aaaaaa","w":2.75},"4,13"],
+      [{"w":1.25},"5,0",{"w":1.25},"5,1",{"w":1.25},"5,2",{"c":"#cccccc","w":6.25},"5,5",{"c":"#aaaaaa","w":1.25},"5,8",{"w":1.25},"5,9",{"w":1.25},"5,10",{"w":1.25},"5,13"]
+    ]
+  }
+}

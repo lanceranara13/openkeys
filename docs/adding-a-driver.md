@@ -45,6 +45,18 @@ export const myDriver: DriverModule = {
 };
 ```
 
+A keyboard that is spoken to with HID feature reports uses the transport's `sendFeature`
+and `receiveFeature`, both of which take the report id as a second argument.
+
+### A keyboard that cannot be read
+
+Some keyboards take settings and answer nothing. `src/drivers/royal-kludge.ts` shows how
+that fits the same interface: `readKeymap()` returns the defaults listed in the definition
+(`defaultKeymap`) with what the driver last sent on top, kept in the browser's storage,
+and every change sends the whole keymap. Such a driver sets `notice` in what `connect()`
+returns: one short paragraph the interface shows above the tabs, so the user knows before
+changing anything.
+
 ### Magnetic switches
 
 `connect()` also returns `analog`: an `AnalogSupport` object (in `src/drivers/types.ts`) on
@@ -80,3 +92,6 @@ a driver that does not exist.
 answers reports the way firmware does, and the real driver runs against it. Write the
 same kind of emulator for your protocol, even a small one, so the driver is covered by
 `npm run check`.
+
+Add the emulator to the `emulators` table in `src/drivers/index.ts` as well. The
+**Keyboards** page then opens a virtual copy of your keyboards like it does for the others.

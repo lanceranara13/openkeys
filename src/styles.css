@@ -1206,6 +1206,16 @@ button.key:active .key__cap {
   margin-right: auto;
 }
 
+/* What a driver has to tell the user before anything is changed. */
+.notice {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 12px 18px;
+  font-size: 14.5px;
+}
+
 .tabs {
   display: inline-flex;
   justify-self: start;

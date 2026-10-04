@@ -1,10 +1,27 @@
 import type { KeyboardDefinition } from '../core/definition';
+import { createVirtualRoyalKludgeTransport } from '../transports/virtual-royal-kludge';
+import { createVirtualYiChipTransport } from '../transports/virtual-yichip';
+import { royalKludgeDriver } from './royal-kludge';
 import type { DriverModule, KeyboardDriver, Transport } from './types';
 import { viaDriver } from './via';
 import { yichipDriver } from './yichip';
 
 /** Every protocol OpenKeys can speak. Register new drivers here. */
-export const drivers: DriverModule[] = [viaDriver, yichipDriver];
+export const drivers: DriverModule[] = [viaDriver, yichipDriver, royalKludgeDriver];
+
+// A keyboard in memory for each protocol that is not VIA, by driver id.
+const emulators: Record<string, (definition: KeyboardDefinition) => Transport> = {
+  [yichipDriver.id]: createVirtualYiChipTransport,
+  [royalKludgeDriver.id]: createVirtualRoyalKludgeTransport,
+};
+
+/**
+ * A keyboard in memory that speaks the definition's protocol, to look at a keyboard
+ * without owning it. null for VIA, whose emulator needs more than the definition.
+ */
+export function createEmulator(definition: KeyboardDefinition): Transport | null {
+  return emulators[definition.protocol]?.(definition) ?? null;
+}
 
 /**
  * Asks a keyboard which model it is. Some makers ship many models under one USB id,

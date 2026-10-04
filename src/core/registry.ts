@@ -1,6 +1,4 @@
-import index from 'virtual:keyboard-index';
 import { deviceKey, parseDefinition, type KeyboardDefinition } from './definition';
-import type { KeyboardEntry } from './keyboard-list';
 
 /**
  * Finds the definition for a USB device. Definitions come from two places:
@@ -10,11 +8,27 @@ import type { KeyboardEntry } from './keyboard-list';
 
 const STORAGE_KEY = 'openkeys:definitions';
 
-// One lazy chunk per definition, so only the connected keyboard is downloaded.
-const loaders = import.meta.glob<unknown>('/keyboards/**/*.json', { import: 'default' });
+/** Fetches a chunk once. A fetch that failed (offline, a stale page) is tried again next time. */
+function once<T>(load: () => Promise<T>): () => Promise<T> {
+  let pending: Promise<T> | undefined;
+  return () =>
+    (pending ??= load().catch((error: unknown) => {
+      pending = undefined;
+      throw error;
+    }));
+}
 
-/** Every keyboard that ships with the app, sorted by brand, then by model. */
-export const bundledKeyboards: readonly KeyboardEntry[] = index;
+// The list of bundled keyboards and the table of their files are big, so each is
+// fetched the first time it is needed.
+const loadList = once(() => import('./bundled'));
+const loadFiles = once(() => import('./definition-files'));
+
+/** Starts fetching what recognising a keyboard needs, so it is there once one connects. */
+export function preloadKeyboards(): void {
+  // A failed fetch is reported by whoever needs it next.
+  loadList().catch(() => undefined);
+  loadFiles().catch(() => undefined);
+}
 
 function readSideloaded(): Record<string, unknown> {
   try {
@@ -55,7 +69,8 @@ export async function findDefinition(
     }
   }
 
-  const candidates = index.filter(
+  const { bundledKeyboards } = await loadList();
+  const candidates = bundledKeyboards.filter(
     (item) => item.vendorId === vendorId && item.productId === productId,
   );
   // A keyboard that reported a model only fits the definition written for that model.
@@ -68,6 +83,7 @@ export async function findDefinition(
 
 /** Loads one definition from `keyboards/` by its path in the index. */
 export async function loadBundled(path: string): Promise<KeyboardDefinition> {
+  const { loaders } = await loadFiles();
   const load = loaders[`/keyboards/${path}`];
   if (!load) throw new Error(`keyboards/${path} is not part of this build.`);
   return parseDefinition(await load());

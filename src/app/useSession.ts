@@ -3,10 +3,9 @@ import { createBackup, readBackup } from '../core/backup';
 import { deviceKey, parseDefinition, type KeyboardDefinition } from '../core/definition';
 import { KC_NO, KC_TRNS } from '../core/keycodes';
 import { valueSize, type MenuControl } from '../core/menus';
-import { findDefinition, loadBundled, rememberDefinition } from '../core/registry';
+import { findDefinition, loadBundled, preloadKeyboards, rememberDefinition } from '../core/registry';
 import { createDemoTransport, demoDefinition } from '../demo';
-import { createDriver, hidFilters, identifyModel } from '../drivers';
-import { createVirtualYiChipTransport } from '../transports/virtual-yichip';
+import { createDriver, createEmulator, hidFilters, identifyModel } from '../drivers';
 import type {
   AnalogState,
   AnalogSupport,
@@ -97,7 +96,8 @@ async function readDefinitionFile(file: File) {
 
 /** A keyboard in memory that is laid out like `definition`, with an empty keymap. */
 function virtualCopy(definition: KeyboardDefinition): Transport {
-  if (definition.protocol === 'yichip') return createVirtualYiChipTransport(definition);
+  const emulator = createEmulator(definition);
+  if (emulator) return emulator;
   const { rows, cols } = definition.matrix;
   const blank = (keycode: number) => Array<number>(rows * cols).fill(keycode);
   const keyboard = new VirtualKeyboard({
@@ -220,6 +220,8 @@ export function useSession() {
       open(async () => {
         // Without WebHID there is no picker to open; the connect panel explains why.
         if (!isWebHidSupported()) return null;
+        // The list of built-in keyboards downloads while the user picks a device.
+        preloadKeyboards();
         const device = await pickHidDevice(hidFilters);
         if (!device) return null;
         const transport = await openHidTransport(device);

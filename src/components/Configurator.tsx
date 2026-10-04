@@ -95,6 +95,13 @@ function Workspace({ session, ready }: { session: Session; ready: ReadySession }
         </button>
       </div>
 
+      {info.notice && (
+        <p className="notice card">
+          <span className="tag tag--accent">Note</span>
+          {info.notice}
+        </p>
+      )}
+
       <div className="tabs" role="tablist" aria-label="Configurator sections">
         {tabs.map((item) => (
           <button

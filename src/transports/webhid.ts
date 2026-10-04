@@ -13,6 +13,8 @@ export async function pickHidDevice(filters: HIDDeviceFilter[]): Promise<HIDDevi
     device.collections.some((collection) =>
       filters.some(
         (filter) =>
+          (filter.vendorId === undefined || filter.vendorId === device.vendorId) &&
+          (filter.productId === undefined || filter.productId === device.productId) &&
           (filter.usagePage === undefined || filter.usagePage === collection.usagePage) &&
           (filter.usage === undefined || filter.usage === collection.usage),
       ),
@@ -52,11 +54,11 @@ export async function openHidTransport(device: HIDDevice): Promise<Transport> {
     async close() {
       if (device.opened) await device.close();
     },
-    async sendFeature(report) {
-      await device.sendFeatureReport(0, new Uint8Array(report));
+    async sendFeature(report, reportId = 0) {
+      await device.sendFeatureReport(reportId, new Uint8Array(report));
     },
-    async receiveFeature() {
-      const { buffer, byteOffset, byteLength } = await device.receiveFeatureReport(0);
+    async receiveFeature(reportId = 0) {
+      const { buffer, byteOffset, byteLength } = await device.receiveFeatureReport(reportId);
       const bytes = new Uint8Array(buffer, byteOffset, byteLength);
       // Some platforms put the report id in front of the 64 data bytes.
       return bytes.length === 65 ? bytes.subarray(1) : bytes;

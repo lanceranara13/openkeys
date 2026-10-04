@@ -9,18 +9,42 @@ from, followed closely, or used as a reference, and what exactly was taken.
 
 - Source: [the-via/keyboards](https://github.com/the-via/keyboards)
 - License: GPL-3.0
-- Used for: the definition files under `keyboards/`, except the magnetic Keychron and
-  Lemokey ones listed next. They are copied unchanged by `npm run add-keyboard`. The
-  definition file format itself is VIA's.
+- Used for: most definition files under `keyboards/`: the whole `v3` folder of the
+  collection, about 2,000 keyboards, except where a source listed next covers the same
+  keyboard. They are copied unchanged by `npm run add-keyboard`. The definition file
+  format itself is VIA's.
 
-### Keychron and Lemokey magnetic keyboard definitions
+### Keychron and Lemokey definitions
 
 - Source: [Keychron/qmk_firmware](https://github.com/Keychron/qmk_firmware), the `via_json`
-  folders of its Keychron and Lemokey HE keyboards
+  folders of its Keychron and Lemokey keyboards (branch `2025q3`)
 - License: GPL-2.0-or-later
-- Used for: the definition files in `keyboards/keychron/*_he/` and `keyboards/lemokey/`.
-  Each is the upstream file with one line added, `"analog": "keychron"`, which tells
-  OpenKeys how the keyboard's magnetic switches are configured.
+- Used for: the Keychron and Lemokey keyboards the VIA collection does not have, about
+  190 files: the wireless K, Q and V boards (Pro and Max), the 8K boards and every
+  magnetic HE board. They sit in `keyboards/keychron/` and `keyboards/lemokey/` and are
+  copied unchanged, with one exception: the magnetic ones (folders ending in `_he`) have
+  one line added, `"analog": "keychron"`, which tells OpenKeys how the keyboard's magnetic
+  switches are configured. One upstream file is left out because it does not validate
+  (`k17_max_jis_knob_white.json` uses a column outside its own matrix).
+
+### NuPhy definitions
+
+- Source: [nuphy-src/qmk_firmware](https://github.com/nuphy-src/qmk_firmware), the
+  `keymaps/via` folder of each keyboard (branch `nuphy-keyboards`)
+- License: GPL-2.0-or-later
+- Used for: the eight files in `keyboards/nuphy/`, copied unchanged and renamed to
+  `<board>/ansi.json`.
+
+### Royal Kludge definitions
+
+- Source: [Kludge Knight](https://github.com/vinc3m1/kludgeknight) (GPL-3.0), its folder
+  `public/rk`: the per-model configuration files of Royal Kludge's own Windows software
+- Used for: the files in `keyboards/royal_kludge/`. They are not copies:
+  `scripts/import-royal-kludge.mjs` builds each one from a model's `KB.ini` (where every key
+  sits in the vendor's picture, which key it is, and its place in the buffer the keyboard is
+  sent) and from the names of the lighting effects. Four models are left out because
+  [Rangoli's status list](https://github.com/rnayabed/rangoli/blob/master/keyboards-list.md)
+  reports them as not working.
 
 ### kle-serial
 
@@ -97,6 +121,24 @@ projects below. Without them it could not talk to a keyboard.
   checksum) and the key positions and default keys in
   `keyboards/akko/5075b_plus/5075b_plus.json`. Each was then confirmed on a real Akko
   5075B Plus before being used.
+
+### Rangoli and Kludge Knight
+
+- Sources: [rnayabed/rangoli](https://github.com/rnayabed/rangoli) and
+  [vinc3m1/kludgeknight](https://github.com/vinc3m1/kludgeknight)
+- License: GPL-3.0 (both)
+- Two open configurators for Royal Kludge keyboards. Rangoli worked the protocol out from
+  USB captures; Kludge Knight ported it to the browser and added key values from captures
+  of its own.
+- Rangoli's `src/keyboardconfiguratorcontroller.cpp` and Kludge Knight's
+  `src/models/BufferCodec.ts` and `LightingCodec.ts`: the report id, the nine reports of a
+  keymap with their headers, four bytes per key, and the lighting report, in
+  `src/drivers/royal-kludge.ts`.
+- Rangoli's `src/keycode.h` and Kludge Knight's `src/types/keycode.ts`: what the keyboard
+  stores for each key (plain keys, modifier bits, media keys, Fn), in the driver's key
+  list and in the table of `scripts/import-royal-kludge.mjs`.
+- Rangoli's `keyboards-list.md`: which models are reported as not working.
+- Not yet confirmed by OpenKeys on a real keyboard.
 
 ### VIA
 

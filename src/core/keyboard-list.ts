@@ -49,3 +49,14 @@ export function groupByBrand(entries: readonly KeyboardEntry[]): BrandGroup[] {
   }
   return groups;
 }
+
+/**
+ * What the landing page says about the built-in keyboards. Small enough to ship up
+ * front; build/keyboard-index.ts makes it from the same scan as the list.
+ */
+export interface KeyboardSummary {
+  keyboards: number;
+  brands: number;
+  /** The brands with the most keyboards, largest first. */
+  largest: { brand: string; keyboards: number }[];
+}

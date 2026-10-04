@@ -62,8 +62,15 @@ ready, follow any path above.
 
 - **Brand.** The first folder under `keyboards/` is the brand a keyboard is listed under.
   `npm run add-keyboard` picks one for you; move the file to another folder to change it.
+- **Already built in.** The whole VIA collection ships with OpenKeys, so the command
+  mostly finds keyboards added to that collection since. It says so when a keyboard is
+  already covered.
 - **Magnetic switches.** Keychron HE keyboards get a **Switches** tab on their own. For
   another keyboard that uses the same commands, add `"analog": "keychron"` to its file.
+- **Royal Kludge.** The models that use the RK software, not VIA, have generated files in
+  `keyboards/royal_kludge/`. [keyboards/README.md](../keyboards/README.md) says how to
+  rebuild them. A Royal Kludge model that runs QMK with VIA is added like any other VIA
+  keyboard.
 - **Checking by hand.** `npm run check` checks every file in `keyboards/` and names the
   file and the problem:
 
