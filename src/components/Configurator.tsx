@@ -85,7 +85,9 @@ function Workspace({ session, ready }: { session: Session; ready: ReadySession }
           <span className="tag">
             {info.protocolName} {info.protocolVersion}
           </span>
-          <span className="tag">{info.layerCount} layers</span>
+          <span className="tag">
+            {info.layerCount} {info.layerCount === 1 ? 'layer' : 'layers'}
+          </span>
           <span className="tag">{deviceKey(device.vendorId, device.productId)}</span>
         </div>
         <button type="button" className="btn btn--ghost btn--sm" onClick={() => void session.disconnect()}>
