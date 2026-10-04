@@ -1,6 +1,8 @@
 import { Moon, Sun } from 'lucide-react';
+import { REPO_URL } from '../app/links';
 import type { Route } from '../app/useHashRoute';
 import type { Theme } from '../app/useTheme';
+import { GitHubMark } from './GitHubMark';
 
 interface Props {
   route: Route;
@@ -28,11 +30,24 @@ export function Header({ route, deviceName, theme, onToggleTheme }: Props) {
           <a href="#/keyboards" aria-current={route === 'keyboards' ? 'page' : undefined}>
             Keyboards
           </a>
-          <a href="#add">Add yours</a>
+          <a href="#/contribute" aria-current={route === 'contribute' ? 'page' : undefined}>
+            Contribute
+          </a>
           <a href="#faq">FAQ</a>
         </nav>
 
         <div className="header__actions">
+          <a
+            className="btn btn--sm btn--icon header__github"
+            href={REPO_URL}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="OpenKeys on GitHub"
+            title="OpenKeys on GitHub"
+          >
+            <GitHubMark size={18} />
+          </a>
+
           <button
             type="button"
             className="btn btn--sm"

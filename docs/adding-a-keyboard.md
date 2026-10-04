@@ -20,6 +20,18 @@ If the file has a problem, a message says what is wrong, for example
 
 ## I want it built in for everyone
 
+No terminal here either. Do the three steps above first, so you know the file is good.
+
+1. **Open the form.** It is on GitHub:
+   [Add a keyboard](https://github.com/lanceranara13/openkeys/issues/new?template=add-keyboard.yml).
+2. **Drop the file in.** Drag the `.json` file into the form and say where it came from.
+3. **Submit.** A maintainer adds it, and it is listed under its brand.
+
+That needs a free GitHub account. The **Contribute** page in OpenKeys walks through the
+same steps.
+
+## I want to add it myself, with a pull request
+
 1. **Add it.** One command finds the keyboard, copies its file into `keyboards/` and
    checks it:
 
@@ -44,7 +56,7 @@ Nothing else needs editing. Every file in `keyboards/` is picked up automaticall
 
 Then one has to be written: a name, two USB ids, the matrix size and the layout. The format
 and a worked example are in [definition-format.md](definition-format.md). When the file is
-ready, follow either path above.
+ready, follow any path above.
 
 ## Good to know
 

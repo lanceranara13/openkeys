@@ -4,6 +4,7 @@ import { openConfigurator, useHashRoute } from './app/useHashRoute';
 import { useSession, type Notice } from './app/useSession';
 import { useTheme } from './app/useTheme';
 import { Configurator } from './components/Configurator';
+import { ContributePage } from './components/ContributePage';
 import { Footer } from './components/Footer';
 import { Header } from './components/Header';
 import { KeyboardsPage } from './components/KeyboardsPage';
@@ -41,6 +42,13 @@ export default function App() {
   const { theme, toggle } = useTheme();
   const { state } = session;
 
+  const tryFile = (file: File) => {
+    // A file with a problem keeps the user here, next to the message about it.
+    void session.previewFile(file).then((good) => {
+      if (good) openConfigurator();
+    });
+  };
+
   return (
     <>
       <Header
@@ -68,14 +76,10 @@ export default function App() {
               openConfigurator();
               void session.connectPreview(path);
             }}
-            onTryFile={(file) => {
-              // A file with a problem keeps the user here, next to the message about it.
-              void session.previewFile(file).then((good) => {
-                if (good) openConfigurator();
-              });
-            }}
+            onTryFile={tryFile}
           />
         )}
+        {route === 'contribute' && <ContributePage onTryFile={tryFile} />}
         {route === 'configure' && <Configurator session={session} />}
       </main>
       <Footer />

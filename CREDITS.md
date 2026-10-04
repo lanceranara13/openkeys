@@ -58,6 +58,7 @@ SOFTWARE.
 | --- | --- | --- |
 | [React](https://github.com/facebook/react) | MIT | The interface |
 | [Lucide](https://github.com/lucide-icons/lucide) | ISC | Icons |
+| [Simple Icons](https://github.com/simple-icons/simple-icons) | CC0-1.0 | The path of the GitHub mark in `src/components/GitHubMark.tsx`. The mark is GitHub's trademark, used only to link to the repository |
 | [IBM Plex](https://github.com/IBM/plex) Sans and Mono | OFL-1.1 | Typefaces |
 | [Fontsource](https://github.com/fontsource/fontsource) | MIT | Packaging of the fonts |
 

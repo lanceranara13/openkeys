@@ -46,8 +46,13 @@ Open the address it prints in Chrome, Edge, Opera or Brave. No keyboard nearby? 
 
 ## Add a keyboard
 
-One command finds the keyboard in the VIA collection, copies its file into `keyboards/` and
-checks it:
+No terminal needed. Check the file on the **Keyboards** page with **Try a definition file**,
+then drop it into the
+[Add a keyboard](https://github.com/lanceranara13/openkeys/issues/new?template=add-keyboard.yml)
+form on GitHub. A maintainer adds it. The **Contribute** page in the app walks through it.
+
+With git, one command finds the keyboard in the VIA collection, copies its file into
+`keyboards/` and checks it:
 
 ```sh
 npm run add-keyboard q1
@@ -61,6 +66,7 @@ npm run add-keyboard ./my-board.json
 
 Then `npm run dev`, open **Keyboards** and click it to see it. Nothing else needs editing.
 
+- Every way to help: [CONTRIBUTING.md](CONTRIBUTING.md)
 - Step by step: [docs/adding-a-keyboard.md](docs/adding-a-keyboard.md)
 - Writing a definition from scratch: [docs/definition-format.md](docs/definition-format.md)
 - Keyboards that do not speak VIA need a driver: [docs/adding-a-driver.md](docs/adding-a-driver.md)

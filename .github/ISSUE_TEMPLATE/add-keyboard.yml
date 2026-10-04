@@ -1,0 +1,42 @@
+name: Add a keyboard
+description: Send a keyboard's definition file so it is built in for everyone.
+title: 'Add keyboard: '
+labels: [keyboard]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for adding a keyboard. Three fields, no code.
+
+        Not tried the file yet? In OpenKeys, open **Keyboards** and click **Try a definition file**. If the file has a problem, a message says what it is.
+  - type: input
+    id: keyboard
+    attributes:
+      label: Keyboard
+      description: Brand and model, as on the box.
+      placeholder: Keychron Q1 V2 ANSI
+    validations:
+      required: true
+  - type: textarea
+    id: definition
+    attributes:
+      label: Definition file
+      description: Drag the `.json` file into this box, or paste its contents. Already in VIA's collection? Its name there is enough.
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Where is the file from?
+      description: A link to the maker's download page, or "I wrote it".
+      placeholder: https://maker.example/support/my-keyboard
+    validations:
+      required: true
+  - type: checkboxes
+    id: checked
+    attributes:
+      label: Checked
+      description: Tick what you did. Neither is required.
+      options:
+        - label: I tried the file in OpenKeys and the picture matches my keyboard.
+        - label: I connected the real keyboard and changed a key.

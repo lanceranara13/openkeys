@@ -131,6 +131,13 @@ on the dark page.
 - **Toast**: cream text on `--case`, bottom centre, click to dismiss.
 - **Theme switch**: a small keycap button in the header, labelled with the theme it
   switches to ("Dark" / "Light") next to a moon or sun.
+- **GitHub link** (`.btn--icon`): a keycap button with the GitHub mark and no text, beside
+  the theme switch. It opens the repository in a new tab. The mark is the one icon that is
+  not from Lucide, which has no brand icons.
+- **Contribute page**: the way without a terminal comes first, as three big step keycaps,
+  each with the button that does the step. The way with git follows as a card of small
+  numbered steps (`.ministeps`), one command each. Then cards for other ways to help, and
+  questions.
 
 ## 5. Layout
 
@@ -176,5 +183,7 @@ keyboard case, because that is the keyboard's lighting.
 - Below 860px the hero stacks: headline, then fact sheet.
 - Below 760px the header navigation hides, the theme switch shows its icon only, sections
   tighten and setting rows stack.
+- Below 440px the GitHub link leaves the header, which has no room for it. The footer has
+  the same link on every page.
 - `prefers-reduced-motion` turns off the key-press movement and smooth scrolling.
 - Keyboard focus is always visible: a 2px blue outline, yellow on the dark case.

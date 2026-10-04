@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react';
 
-export type Route = 'home' | 'configure' | 'keyboards';
+export type Route = 'home' | 'configure' | 'keyboards' | 'contribute';
 
-// "#/configure" is the configurator and "#/keyboards" the list of supported
-// keyboards. Every other hash ("#how", ...) is a section of the landing page, which
-// the browser scrolls to by itself.
+// "#/configure" is the configurator, "#/keyboards" the list of supported keyboards
+// and "#/contribute" the guide to adding one. Every other hash ("#how", ...) is a
+// section of the landing page, which the browser scrolls to by itself.
 function readRoute(): Route {
   const { hash } = window.location;
   if (hash.startsWith('#/configure')) return 'configure';
   if (hash.startsWith('#/keyboards')) return 'keyboards';
+  if (hash.startsWith('#/contribute')) return 'contribute';
   return 'home';
 }
 

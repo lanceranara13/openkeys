@@ -1,8 +1,9 @@
-import { FileJson, Search } from 'lucide-react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { Search } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 import { deviceKey } from '../core/definition';
 import { groupByBrand, searchKeyboards } from '../core/keyboard-list';
 import { bundledKeyboards } from '../core/registry';
+import { TryFileButton } from './TryFileButton';
 
 interface Props {
   /** Opens a virtual copy of a built-in keyboard, by its path in `keyboards/`. */
@@ -19,7 +20,6 @@ const plural = (count: number, word: string) => `${count} ${word}${count === 1 ?
 /** Every built-in keyboard, by brand, with a search across brand, model and USB id. */
 export function KeyboardsPage({ onPreview, onTryFile }: Props) {
   const [query, setQuery] = useState('');
-  const fileInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -47,23 +47,9 @@ export function KeyboardsPage({ onPreview, onTryFile }: Props) {
         <p>
           <strong>Not listed?</strong> Any VIA keyboard works with its definition file. Try the file
           here: a virtual copy opens, and the real keyboard is recognised in this browser from then
-          on. <a href="#add">How to add it for everyone.</a>
+          on. <a href="#/contribute">How to add it for everyone.</a>
         </p>
-        <button type="button" className="btn" onClick={() => fileInput.current?.click()}>
-          <FileJson size={16} aria-hidden /> Try a definition file
-        </button>
-        <input
-          ref={fileInput}
-          type="file"
-          accept=".json,application/json"
-          hidden
-          onChange={(event) => {
-            const file = event.target.files?.[0];
-            // Clear the input so picking the same file again fires a change.
-            event.target.value = '';
-            if (file) onTryFile(file);
-          }}
-        />
+        <TryFileButton onTryFile={onTryFile} />
       </div>
 
       <div className="catalog__tools">

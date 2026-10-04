@@ -49,7 +49,7 @@ export function ConnectPanel({ session }: { session: Session }) {
         </div>
         <p className="connect__help">
           Keyboard makers publish this file on their support page, usually called “VIA JSON”. Want
-          it built in for everyone? <a href="#add">See how to add a keyboard.</a>
+          it built in for everyone? <a href="#/contribute">See how to add a keyboard.</a>
         </p>
         {definitionInput}
       </div>

@@ -99,9 +99,8 @@ const ADD_STEPS = [
     text: 'Open Keyboards and click “Try a definition file”. A virtual copy opens so you can see the layout is right. Your browser now recognises the real keyboard too.',
   },
   {
-    title: 'Share it',
-    text: 'To build it in for everyone, one command puts the file in the project and checks it. Then open a pull request.',
-    code: 'npm run add-keyboard ./my-board.json',
+    title: 'Send it',
+    text: 'Drop the file into a short form on GitHub. A maintainer adds it, and it is built in for everyone.',
   },
 ];
 
@@ -263,7 +262,8 @@ export function Landing({ onConnect, onDemo }: Props) {
         <Eyebrow number="04">Add your keyboard</Eyebrow>
         <h2 className="section__title">Support for a new board is one file.</h2>
         <p className="section__lead">
-          OpenKeys reads the same definition files as VIA. There is no code to write.
+          OpenKeys reads the same definition files as VIA. There is no code to write and no
+          terminal to open.
         </p>
         <ol className="steps">
           {ADD_STEPS.map((step, index) => (
@@ -271,19 +271,14 @@ export function Landing({ onConnect, onDemo }: Props) {
               <span className="keycap">{index + 1}</span>
               <h3 className="step__title">{step.title}</h3>
               <p className="step__text">{step.text}</p>
-              {step.code && <code className="code">{step.code}</code>}
             </li>
           ))}
         </ol>
         <div className="hero__actions">
-          <a className="btn btn--lg" href="#/keyboards">
-            Open the Keyboards page <ArrowRight size={18} aria-hidden />
+          <a className="btn btn--lg" href="#/contribute">
+            How to add your keyboard <ArrowRight size={18} aria-hidden />
           </a>
         </div>
-        <p className="section__lead section__lead--after">
-          Already in the VIA collection of 2,000+ keyboards? Skip step 1:{' '}
-          <code>npm run add-keyboard q1</code> finds it, adds it and checks it.
-        </p>
       </section>
 
       <section id="faq" className="section container">

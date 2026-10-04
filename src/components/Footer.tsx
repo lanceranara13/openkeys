@@ -1,3 +1,5 @@
+import { NEW_ISSUE_URL, REPO_URL } from '../app/links';
+
 function External({ href, children }: { href: string; children: string }) {
   return (
     <a href={href} target="_blank" rel="noreferrer">
@@ -24,6 +26,11 @@ export function Footer() {
         . Idea from{' '}
         <External href="https://github.com/OpenMouse-Project/openmouse">OpenMouse</External>. The
         full list, with licenses, is in <code>CREDITS.md</code>.
+      </p>
+      <p className="footer__links">
+        <External href={REPO_URL}>Source on GitHub</External>
+        <a href="#/contribute">Contribute</a>
+        <External href={NEW_ISSUE_URL}>Report a problem</External>
       </p>
       <p className="footer__meta">
         <span>OpenKeys · free software under GPL-3.0, no warranty</span>
